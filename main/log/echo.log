@@ -1,0 +1,38 @@
+2020-08-24 16:40:10.750	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 16:40:47.405	INFO	db/mysql.go:67	disconnect mysql
+2020-08-24 16:41:35.233	INFO	db/mysql.go:67	disconnect mysql
+2020-08-24 16:46:00.919	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 16:46:43.187	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 16:48:06.668	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 16:49:02.369	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 16:53:54.519	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 16:54:07.562	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:06:38.352	INFO	db/redis.go:43	disconnect redis
+2020-08-24 17:06:38.353	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:06:38.353	INFO	producer/producer.go:52	stop nsq producer
+2020-08-24 17:06:38.353	INFO	routes/api.go:35	stop router
+2020-08-24 17:07:31.668	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:10:25.910	INFO	db/mysql.go:65	disconnect mysql
+2020-08-24 17:11:58.267	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:13:38.227	INFO	db/mysql.go:65	disconnect mysql
+2020-08-24 17:14:28.503	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:16:56.604	INFO	db/mysql.go:67	disconnect mysql
+2020-08-24 17:18:39.228	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:19:18.198	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 17:19:48.785	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 17:21:19.555	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 17:25:17.038	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 17:26:13.088	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 17:29:59.597	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 17:40:00.568	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:40:20.981	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:53:25.490	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 17:54:31.984	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 18:04:56.942	INFO	db/redis.go:43	disconnect redis
+2020-08-24 18:04:56.943	INFO	db/mysql.go:68	disconnect mysql
+2020-08-24 18:04:56.943	INFO	producer/producer.go:52	stop nsq producer
+2020-08-24 18:04:56.943	INFO	routes/api.go:35	stop router
+2020-08-24 18:14:16.793	INFO	db/redis.go:43	disconnect redis
+2020-08-24 18:14:16.794	INFO	db/mysql.go:66	disconnect mysql
+2020-08-24 18:14:16.794	INFO	producer/producer.go:52	stop nsq producer
+2020-08-24 18:14:16.794	INFO	routes/api.go:35	stop router
