@@ -1,4 +1,4 @@
-package model
+package models
 
 import (
 	"github.com/jinzhu/gorm"
@@ -8,6 +8,7 @@ import (
 
 // EmployeesBase struct is a row record of the employees_base table in the jz_ybs database
 type EmployeesBase struct {
+	BaseModel
 	//[ 0] id                                             ubigint              null: false  primary: true   isArray: false  auto: true   col: ubigint         len: -1      default: []
 	ID uint64 `gorm:"primary_key;AUTO_INCREMENT;column:id;type:ubigint;" json:"id"`
 	//[ 5] name                                           varchar(64)          null: false  primary: false  isArray: false  auto: false  col: varchar         len: 64      default: []
@@ -19,17 +20,13 @@ type EmployeesBase struct {
 }
 
 func (m EmployeesBase) Model() *gorm.DB {
-	return db.Mysql((&m).Connection()).Model(&m).Table(m.TableName())
-}
-
-func (m EmployeesBase) ModelMaster() *gorm.DB {
-	return db.ModelMaster((&m).Connection()).Model(&m).Table(m.TableName())
+	return db.Mysql((&m).Connection()).Model(&m)
 }
 
 func (*EmployeesBase) Connection() string {
 	return "jz_ybs"
 }
 
-func (*EmployeesBase) TableName() string {
+func (m *EmployeesBase) TableName() string {
 	return "employees_base"
 }

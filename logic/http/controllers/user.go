@@ -1,9 +1,9 @@
-package controller
+package controllers
 
 import (
+	"echo-framework/logic/http/models"
+	"echo-framework/logic/http/responses"
 	"github.com/labstack/echo/v4"
-	"echo-framework/logic/http/model"
-	"echo-framework/logic/http/response"
 	"net/http"
 )
 
@@ -20,9 +20,9 @@ func GetHello(context echo.Context) error {
 	//pageRequest := DefaultPageRequest(data.PageRequest)
 	pageResponse := NewPageResponse(data.PageRequest)
 
-	var res []model.EmployeesBase
+	var res []models.EmployeesBase
 	//
-	EmployeesBase := model.EmployeesBase{}
+	EmployeesBase := models.EmployeesBase{}
 	query := EmployeesBase.Model()
 
 	query = query.
@@ -35,7 +35,7 @@ func GetHello(context echo.Context) error {
 
 	pageResponse.Data = res
 
-	return context.JSON(http.StatusOK, response.Success(pageResponse))
+	return context.JSON(http.StatusOK, responses.Success(pageResponse))
 }
 
 func GetHello2(ctx echo.Context) error {
@@ -47,7 +47,7 @@ func GetHello2(ctx echo.Context) error {
 	err := ctx.Bind(&data)
 
 	if err != nil {
-		return ctx.JSON(http.StatusLocked, response.Fail(err.Error()))
+		return ctx.JSON(http.StatusLocked, responses.Fail(err.Error()))
 	}
 
 	return ctx.String(http.StatusOK, "Hello, World!23334XDS")

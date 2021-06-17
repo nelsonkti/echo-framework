@@ -48,7 +48,6 @@ func (m *Binder) lazyInit() {
 
 // 数据绑定以及校验
 func (m *Binder) Bind(v interface{}, c echo.Context) error {
-
 	if err := m.DefaultBinder.Bind(v, c); err != nil {
 		return err
 	}

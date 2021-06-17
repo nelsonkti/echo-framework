@@ -75,3 +75,29 @@ func RemoveDuplicateString(a []string) []string {
     }
     return ret
 }
+
+func RemoveSlice(a []uint64, b uint64) []uint64 {
+
+    var newData []uint64
+
+    for _, value := range a {
+        if value != b {
+            newData = append(newData, value)
+        }
+    }
+
+    return newData
+}
+
+func RemoveSliceByString(a []string, b string) []string {
+
+    var newData []string
+
+    for _, value := range a {
+        if value != b {
+            newData = append(newData, value)
+        }
+    }
+
+    return newData
+}

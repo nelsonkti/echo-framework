@@ -2,12 +2,14 @@ package config
 
 const masterSuffixName = "_master"
 
+
 type DBConfig struct{
 	Host string
 	Port string
 	User string
 	Pwd  string
 	Name string
+	RHost []string
 }
 
 // 数据库和服务配置

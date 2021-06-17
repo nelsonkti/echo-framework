@@ -1,14 +1,16 @@
 package jwt
 
 import (
+    "echo-framework/config"
+    "echo-framework/lib/helper"
     "errors"
     "fmt"
     "github.com/dgrijalva/jwt-go"
-    "echo-framework/config"
+    "reflect"
 )
 
 type TokenData struct {
-    StaffId  uint32
+    StaffId  uint64
     ExpireAt int64
 }
 
@@ -32,7 +34,15 @@ func ParseToken(tokenString string) (*TokenData, error) {
         return nil, errors.New("validation failed")
     }
 
-    return &TokenData{StaffId: uint32(claims["staff_id"].(float64)), ExpireAt: int64(claims["expire_at"].(float64))}, nil
+    var staffId uint64
+    if reflect.TypeOf(claims["user_id"]).String() == "string" {
+        staffId = helper.StrToUint64(fmt.Sprintf("%s", claims["user_id"]))
+    } else {
+        staffId = uint64(claims["user_id"].(float64))
+    }
+
+    return &TokenData{StaffId: staffId, ExpireAt: int64(claims["exp"].(float64))}, nil
+
 }
 
 func MakeToken(data TokenData) string {
@@ -44,3 +54,4 @@ func MakeToken(data TokenData) string {
     tokenString, _ := token.SignedString([]byte(config.AppSign))
     return tokenString
 }
+

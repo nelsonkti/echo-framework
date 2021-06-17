@@ -33,7 +33,7 @@ func newError(errorMsg string) *errorT {
 *urlAddress (url)
 *parameter(请求参数  map)
  */
-func Http(method, urlAddress string, parameter map[string]string,header map[string]string) *HttpResponse {
+func Http(method, urlAddress string, parameter map[string]string, header map[string]string) *HttpResponse {
 	Url, _ := url.Parse(urlAddress)
 	params := url.Values{}
 

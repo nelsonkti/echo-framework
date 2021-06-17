@@ -2,7 +2,7 @@ package helper
 
 import (
     "encoding/json"
-    "echo-framework/lib/logger"
+    "yim-live/lib/logger"
 )
 
 func JsonMarshal(v interface{}) string {
@@ -20,4 +20,9 @@ func StructToMap(in interface{}) map[string]interface{} {
         return nil
     }
     return inInterface
+}
+
+func JsonMarshalByte(v interface{}) []byte {
+    buf, _ := json.Marshal(v)
+    return  buf
 }

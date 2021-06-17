@@ -4,20 +4,20 @@ import (
 	"context"
 	"github.com/labstack/echo/v4"
 	"echo-framework/lib/logger"
-	"echo-framework/logic/http/controller"
+	"echo-framework/logic/http/controllers"
 	"time"
 )
 
 func Register(api *echo.Echo) {
 
 	g := api.Group("/api")
-	g.GET("/hello", controller.GetHello)
-	g.GET("/hello2", controller.GetHello2)
+	g.GET("/hello", controllers.GetHello)
+	g.GET("/hello2", controllers.GetHello2)
 
 
 
 	//userGroup := g.Group("/user", middleware.Auth)
-	//userGroup.GET("/list2", controller.GetHello2)
+	//userGroup.GET("/list2", controllers.GetHello2)
 
 }
 

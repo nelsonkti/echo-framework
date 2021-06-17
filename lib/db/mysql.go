@@ -1,42 +1,83 @@
 package db
 
 import (
+	"database/sql"
 	"fmt"
-	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	config2 "echo-framework/config"
-	"echo-framework/lib/logger"
-	"sync"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+	"gorm.io/plugin/dbresolver"
 	"time"
+
+	_ "gorm.io/plugin/dbresolver"
+	//"gorm.io/plugin/dbresolver"
+	"echo-framework/config"
+	my_logger "echo-framework/lib/logger"
+	"sync"
 )
 
 var mysqlDatabases sync.Map
 
+var db *gorm.DB
+
 const defaultConfig = "?parseTime=true&charset=utf8mb4&loc=Asia%2FShanghai"
 
 func InitMysql() {
-	for key, Config := range config2.MysqlConfig {
+	for key, Config := range config.MysqlConfig {
 		ConnectMysql(Config, key)
 	}
 }
 
-func ConnectMysql(Config config2.DBConfig, name string) *gorm.DB {
-	sql := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", Config.User, Config.Pwd, Config.Host, Config.Port, Config.Name, defaultConfig)
+func ConnectMysql(Config config.DBConfig, name string) *gorm.DB {
+	var dialect []gorm.Dialector
 
-	db, _ := gorm.Open("mysql", sql)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", Config.User, Config.Pwd, Config.Host, Config.Port, Config.Name, defaultConfig)
 
-	err := db.DB().Ping()
+
+	logLevel := logger.Silent
+
+	if config.Env == "local"  {
+		logLevel = logger.Info
+	}
+
+	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logLevel),
+	})
+
+
 	if err != nil {
+		my_logger.Sugar.Info(err)
+		panic(err)
+	}
+
+	if Config.RHost != nil {
+
+		for _, v := range Config.RHost {
+			sqlRead := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", Config.User, Config.Pwd, v, Config.Port, Config.Name, defaultConfig)
+			//sqlRead := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", "homestead", "secret", "192.168.10.10", "3306", "jz_ybs", defaultConfig)
+
+			dialect = append(dialect, mysql.Open(sqlRead))
+		}
+
+		_ = db.Use(dbresolver.Register(dbresolver.Config{
+			// `db2` 作为 sources，`db3`、`db4` 作为 replicas
+			Sources:  []gorm.Dialector{mysql.Open(dsn)},
+			Replicas: dialect,
+			// sources/replicas 负载均衡策略
+			Policy: dbresolver.RandomPolicy{},
+		}))
+	}
+
+	sqlDB, err := db.DB()
+
+	if err != nil {
+		my_logger.Sugar.Info("failed to connect mysql:" + name)
 		panic("failed to connect mysql:" + name)
 	}
 
-	db.DB().SetMaxIdleConns(1024)
-	db.DB().SetMaxOpenConns(1024)
-	db.DB().SetConnMaxLifetime(time.Minute * 10) //连接超时10分钟，数据库的wait_timeout最好设置为11分钟
+	ping(sqlDB, name)
 
-	if config2.Env == "local" {
-		db.LogMode(true)
-	}
+	sqlDB = setDefault(sqlDB)
 
 	mysqlDatabases.Store(name, db)
 
@@ -49,19 +90,29 @@ func Mysql(name string) *gorm.DB {
 	return db.(*gorm.DB)
 }
 
-//
-func ModelMaster(name string) *gorm.DB {
-	db := Mysql(name + config2.MasterSuffix)
-	if db.DB().Ping() != nil {
-		return Mysql(name)
-	}
-	return db
-}
-
 func DisconnectMysql() {
 	mysqlDatabases.Range(func(key, value interface{}) bool {
-		defer value.(*gorm.DB).Close()
+		db, _ := value.(*gorm.DB)
+		sqlDB, _ := db.DB()
+		sqlDB.Close()
 		return true
 	})
-	logger.Sugar.Info("disconnect mysql")
+	my_logger.Sugar.Info("disconnect mysql")
+}
+
+func ping(sqlDB *sql.DB, name string) {
+	err := sqlDB.Ping()
+	if err != nil {
+		my_logger.Sugar.Info("failed to connect mysql:" + name)
+		panic("failed to connect mysql:" + name)
+	}
+}
+
+func setDefault(sqlDB *sql.DB) *sql.DB {
+
+	sqlDB.SetMaxIdleConns(1024)
+	sqlDB.SetMaxOpenConns(1024)
+	sqlDB.SetConnMaxLifetime(time.Minute * 10) //连接超时10分钟，数据库的wait_timeout最好设置为11分钟
+
+	return sqlDB
 }

@@ -1,12 +1,12 @@
 package logger
 
 import (
-	"os"
-	"time"
-
+	"fmt"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
+	"os"
+	"time"
 )
 
 
@@ -35,8 +35,13 @@ func TimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 }
 
 func init() {
+
+	str, _ := os.Getwd()
+
+	filename := fmt.Sprintf("%s/log/echo.log", str)
+
 	w := zapcore.AddSync(&lumberjack.Logger{
-		Filename:   "log/echo.log",
+		Filename:   filename,
 		MaxSize:    500, // megabytes
 		MaxBackups: 3,
 		MaxAge:     28, // days

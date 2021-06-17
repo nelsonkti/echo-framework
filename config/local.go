@@ -3,8 +3,10 @@ package config
 import (
 	"github.com/tidwall/gjson"
 	"io/ioutil"
+	"os"
+	"strings"
 	"echo-framework/lib/helper"
-	"log"
+	"echo-framework/lib/logger"
 )
 
 var configStr string
@@ -13,11 +15,10 @@ var values []string
 
 func init() {
 
+	setAppPath()
+
 	// 获取配置文件内容
-	configStr = getContent()
-	if configStr == "" {
-		return
-	}
+	getContent()
 
 	// 设置环境
 	env()
@@ -36,16 +37,42 @@ func init() {
 
 	// 设置域名
 	newDomain()
+
+	// 设置ybs域名
+	newYbsDomain()
+
+
 }
 
-func getContent() string {
-	content, err := ioutil.ReadFile("config.json")
+func setAppPath() {
+
+	projectName := "yim-live"
+
+	path, err := os.Getwd()
+
 	if err != nil {
-		log.Println(err)
-		return ""
+		panic(err)
 	}
 
-	return string(content)
+	AppPath = path[0 : strings.Index(path, projectName)+len(projectName)]
+}
+
+func getContent() {
+
+	content, err := ioutil.ReadFile(AppPath + "/config.json")
+
+	if err != nil {
+		logger.Sugar.Error(err)
+		content, err = ioutil.ReadFile("/wwwroot/config.json")
+		if err == nil {
+			logger.Sugar.Error(err)
+			panic(err)
+		}
+	}
+
+
+	configStr = string(content)
+
 }
 
 // 设置环境
@@ -55,6 +82,12 @@ func env() {
 
 	if value != "" {
 		Env = value
+	}
+
+	value = gjson.Get(configStr, "port").String()
+
+	if value != "" {
+		LogicHTTPListenIP = ":"+value
 	}
 }
 
@@ -67,38 +100,30 @@ func newMysql() {
 			configName := i.Get("conn_name").String()
 
 			// 检查是否存在主从
-			write := i.Get("write").Array()
-			if write != nil {
-				for _, writeHost := range write {
-					MysqlConfig[configName+MasterSuffix] = struct {
-						Host string
-						Port string
-						User string
-						Pwd  string
-						Name string
-					}{
-						Host: writeHost.String(),
-						Port: i.Get("port").String(),
-						User: i.Get("user").String(),
-						Pwd:  i.Get("pwd").String(),
-						Name: i.Get("name").String(),
-					}
-				}
+			read := i.Get("read").Array()
 
+			var rHost []string
+
+			if read != nil {
+				for _, writeHost := range read {
+					rHost = append(rHost, writeHost.String())
+				}
 			}
 
 			MysqlConfig[configName] = struct {
-				Host string
-				Port string
-				User string
-				Pwd  string
-				Name string
+				Host  string
+				Port  string
+				User  string
+				Pwd   string
+				Name  string
+				RHost []string
 			}{
-				Host: i.Get("host").String(),
-				Port: i.Get("port").String(),
-				User: i.Get("user").String(),
-				Pwd:  i.Get("pwd").String(),
-				Name: i.Get("name").String(),
+				Host:  i.Get("host").String(),
+				Port:  i.Get("port").String(),
+				User:  i.Get("user").String(),
+				Pwd:   i.Get("pwd").String(),
+				Name:  i.Get("name").String(),
+				RHost: rHost,
 			}
 		}
 	}
@@ -133,11 +158,16 @@ func newMemcache() {
 //
 func newNsq() {
 	values = make([]string, 0)
-	for _, v := range gjson.Get(configStr, "nsq").Array() {
+	for _, v := range gjson.Get(configStr, "nsq_consumers").Array() {
 		values = append(values, v.String())
 	}
 	if len(values) > 0 {
 		NSQConsumers = values
+	}
+
+	NSQServerHost := gjson.Get(configStr, "nsq_server_hosts").String()
+	if value != "" {
+		NSQIP = NSQServerHost
 	}
 
 	//nsq tcp hosts
@@ -145,6 +175,7 @@ func newNsq() {
 	for _, v := range gjson.Get(configStr, "nsq_server_hosts").Array() {
 		NSQServerHosts[v.String()+"."+ConnectTCPListenPort] = struct{}{}
 	}
+
 }
 
 func newDomain() {
@@ -153,3 +184,4 @@ func newDomain() {
 		AppDomain = value
 	}
 }
+

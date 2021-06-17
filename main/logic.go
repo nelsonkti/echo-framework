@@ -1,6 +1,7 @@
 package main
 
 import (
+	"echo-framework/logic/mq"
 	"github.com/judwhite/go-svc/svc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -50,12 +51,11 @@ func (p *logicProgram) Start() error {
 	//连接redis
 	db.ConnectRedis(config.RedisIP, config.RedisPassword, 0, "default")
 
-	//// 启动nsq消息队列
-	//go func() {
-	//	defer helper.RecoverPanic()
-	//	//producer.StartNsqProducer(config.NSQIP)
-	//	mq.StartNsqServer(config.NSQIP, config.NSQConsumers)
-	//}()
+	go func() {
+		defer helper.RecoverPanic()
+		//producer.StartNsqProducer(config.NSQIP)
+		mq.StartNsqServer(config.NSQIP, config.NSQConsumers)
+	}()
 
 	//启动定时任务
 	if config.Env != "local" {
@@ -71,8 +71,8 @@ func (p *logicProgram) Start() error {
 }
 
 /**
- 启动app
- */
+启动app
+*/
 func newApp()  {
 	e := Echo
 
@@ -82,7 +82,7 @@ func newApp()  {
 	e.Use(middleware.CORS())
 	routes.Register(e)
 
-	e.Logger.Fatal(e.Start(":8080"))
+	e.Logger.Fatal(e.Start(config.LogicHTTPListenIP))
 }
 
 

@@ -9,7 +9,7 @@ func main() {
 	// 迁移伊把手
 	//conn := db.ConnectMysql(getDbConfig("jz_ybs"), "jz_ybs")
 	//defer db.DisconnectMysql()
-	//conn.AutoMigrate(&model.EmployeesBase{})
+	//conn.AutoMigrate(&models.EmployeesBase{})
 }
 
 /**

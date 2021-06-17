@@ -1,8 +1,8 @@
 package db
 
 import (
-    "github.com/go-redis/redis"
     "echo-framework/lib/logger"
+    "github.com/go-redis/redis"
     "sync"
 )
 
@@ -32,7 +32,12 @@ func Redis(name string) *redis.Client {
     if ok {
         return value.(*redis.Client)
     }
+    logger.Sugar.Info("failed to connect redis database:" + name)
     panic("failed to connect redis database:" + name)
+}
+
+func RedisDefault() *redis.Client {
+    return Redis("default")
 }
 
 func DisconnectRedis() {
