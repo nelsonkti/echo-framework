@@ -1,9 +1,9 @@
 package mq
 
 import (
+    "echo-framework/config"
     "fmt"
     "github.com/nsqio/go-nsq"
-    "echo-framework/config"
     "log"
     "os"
     "time"

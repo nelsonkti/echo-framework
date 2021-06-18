@@ -2,18 +2,16 @@ package db
 
 import (
 	"database/sql"
+	"echo-framework/config"
+	my_logger "echo-framework/lib/logger"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
-	"time"
-
 	_ "gorm.io/plugin/dbresolver"
-	//"gorm.io/plugin/dbresolver"
-	"echo-framework/config"
-	my_logger "echo-framework/lib/logger"
 	"sync"
+	"time"
 )
 
 var mysqlDatabases sync.Map

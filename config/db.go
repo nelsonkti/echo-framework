@@ -24,6 +24,7 @@ var (
 	RedisPassword = ""
 )
 
+// nsq config
 var (
 	NSQIP        = "0.0.0.0:4150"
 	NSQConsumers = []string{

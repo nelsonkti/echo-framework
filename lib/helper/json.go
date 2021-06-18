@@ -1,8 +1,8 @@
 package helper
 
 import (
+    "echo-framework/lib/logger"
     "encoding/json"
-    "yim-live/lib/logger"
 )
 
 func JsonMarshal(v interface{}) string {

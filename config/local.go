@@ -1,12 +1,12 @@
 package config
 
 import (
+	"echo-framework/lib/helper"
+	"echo-framework/lib/logger"
 	"github.com/tidwall/gjson"
 	"io/ioutil"
 	"os"
 	"strings"
-	"echo-framework/lib/helper"
-	"echo-framework/lib/logger"
 )
 
 var configStr string
@@ -37,11 +37,6 @@ func init() {
 
 	// 设置域名
 	newDomain()
-
-	// 设置ybs域名
-	newYbsDomain()
-
-
 }
 
 func setAppPath() {

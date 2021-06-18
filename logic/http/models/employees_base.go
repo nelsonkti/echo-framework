@@ -1,8 +1,8 @@
 package models
 
 import (
-	"github.com/jinzhu/gorm"
 	"echo-framework/lib/db"
+	"gorm.io/gorm"
 )
 
 
@@ -13,10 +13,6 @@ type EmployeesBase struct {
 	ID uint64 `gorm:"primary_key;AUTO_INCREMENT;column:id;type:ubigint;" json:"id"`
 	//[ 5] name                                           varchar(64)          null: false  primary: false  isArray: false  auto: false  col: varchar         len: 64      default: []
 	Name string `gorm:"column:name;type:varchar;size:64;" json:"name"` // 姓名
-
-
-	EmployeesDetail EmployeesDetail `gorm:"foreignkey:EmployeesID;;association_foreignkey:ID"`
-
 }
 
 func (m EmployeesBase) Model() *gorm.DB {
@@ -24,9 +20,9 @@ func (m EmployeesBase) Model() *gorm.DB {
 }
 
 func (*EmployeesBase) Connection() string {
-	return "jz_ybs"
+	return "db"
 }
 
 func (m *EmployeesBase) TableName() string {
-	return "employees_base"
+	return "db_name"
 }

@@ -7,7 +7,6 @@ import (
 )
 
 //redis 服务
-
 var redisDatabases sync.Map
 
 func ConnectRedis(address string, password string, db int, name string) *redis.Client {
