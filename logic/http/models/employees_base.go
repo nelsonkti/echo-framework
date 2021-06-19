@@ -5,7 +5,6 @@ import (
 	"gorm.io/gorm"
 )
 
-
 // EmployeesBase struct is a row record of the employees_base table in the jz_ybs database
 type EmployeesBase struct {
 	BaseModel

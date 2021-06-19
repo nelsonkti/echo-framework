@@ -17,21 +17,17 @@ func GetHello(context echo.Context) error {
 	var data getUserRequest
 	_ = context.Bind(&data)
 
-	//pageRequest := DefaultPageRequest(data.PageRequest)
 	pageResponse := NewPageResponse(data.PageRequest)
 
 	var res []models.EmployeesBase
-	//
 	EmployeesBase := models.EmployeesBase{}
 	query := EmployeesBase.Model()
 
 	query = query.
+		Where("id = ?", 1).
 		Limit(10).
 		Order("id asc").
-		Where("id = ?", 817).
-		Preload("EmployeesDetail").
 		Find(&res)
-
 
 	pageResponse.Data = res
 
@@ -39,6 +35,7 @@ func GetHello(context echo.Context) error {
 }
 
 func GetHello2(ctx echo.Context) error {
+
 	type signinStaffRequest struct {
 		Username uint64 `form:"user_name" json:"user_name" query:"user_name" comment:"用户名" validate:"required"`
 		Nickname uint64 `form:"nick_name" json:"nick_name" query:"nick_name" comment:"昵称" validate:"required"`
@@ -50,5 +47,5 @@ func GetHello2(ctx echo.Context) error {
 		return ctx.JSON(http.StatusLocked, responses.Fail(err.Error()))
 	}
 
-	return ctx.String(http.StatusOK, "Hello, World!23334XDS")
+	return ctx.String(http.StatusOK, "Hello, World")
 }

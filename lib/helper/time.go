@@ -17,8 +17,6 @@ var (
 	InitSmallYearMonth string = "0601"
 )
 
-
-
 // FormatTime 格式化时间
 func FormatTime(time time.Time) string {
 	return time.Format("2006-01-02 15:04:05")

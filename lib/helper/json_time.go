@@ -20,6 +20,7 @@ func (t JSONTime) MarshalJSON() ([]byte, error) {
     ts := t.UnixNano() / 1e6
     return []byte(strconv.FormatInt(ts, 10)), nil
 }
+
 // MarshalJSON on JSONTime format Time field with %Y-%m-%d %H:%M:%S
 func (t *JSONTime) UnmarshalJSON(data []byte) error {
     //formatted := fmt.Sprintf("\"%s\"", t.Format("2006-01-02 15:04:05"))
@@ -29,7 +30,7 @@ func (t *JSONTime) UnmarshalJSON(data []byte) error {
     if err != nil {
         return err
     }
-    t.Time = time.Unix(0,  val * 1e6)
+    t.Time = time.Unix(0, val*1e6)
     return nil
 }
 

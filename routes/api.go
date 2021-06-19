@@ -14,13 +14,10 @@ func Register(api *echo.Echo) {
 	g.GET("/hello", controllers.GetHello)
 	g.GET("/hello2", controllers.GetHello2)
 
-
-
 	//userGroup := g.Group("/user", middleware.Auth)
 	//userGroup.GET("/list2", controllers.GetHello2)
 
 }
-
 
 // 结束router
 func CancelRoute(e *echo.Echo) {
@@ -34,6 +31,3 @@ func CancelRoute(e *echo.Echo) {
 	}
 	logger.Sugar.Info("stop router")
 }
-
-
-

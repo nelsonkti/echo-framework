@@ -6,7 +6,6 @@ type DbModel interface {
 }
 
 type BaseModel struct {
-
 }
 
 func (m *BaseModel) SetTableName(dbm DbModel) string {

@@ -65,7 +65,6 @@ func getContent() {
 		}
 	}
 
-
 	configStr = string(content)
 
 }
@@ -82,7 +81,7 @@ func env() {
 	value = gjson.Get(configStr, "port").String()
 
 	if value != "" {
-		LogicHTTPListenIP = ":"+value
+		LogicHTTPListenIP = ":" + value
 	}
 }
 
@@ -179,4 +178,3 @@ func newDomain() {
 		AppDomain = value
 	}
 }
-

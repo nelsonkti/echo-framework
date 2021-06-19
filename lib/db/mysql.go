@@ -16,8 +16,6 @@ import (
 
 var mysqlDatabases sync.Map
 
-var db *gorm.DB
-
 const defaultConfig = "?parseTime=true&charset=utf8mb4&loc=Asia%2FShanghai"
 
 func InitMysql() {
@@ -31,17 +29,15 @@ func ConnectMysql(Config config.DBConfig, name string) *gorm.DB {
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", Config.User, Config.Pwd, Config.Host, Config.Port, Config.Name, defaultConfig)
 
-
 	logLevel := logger.Silent
 
-	if config.Env == "local"  {
+	if config.Env == "local" {
 		logLevel = logger.Info
 	}
 
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logLevel),
 	})
-
 
 	if err != nil {
 		my_logger.Sugar.Info(err)
@@ -52,18 +48,16 @@ func ConnectMysql(Config config.DBConfig, name string) *gorm.DB {
 
 		for _, v := range Config.RHost {
 			sqlRead := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", Config.User, Config.Pwd, v, Config.Port, Config.Name, defaultConfig)
-			//sqlRead := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s%s", "homestead", "secret", "192.168.10.10", "3306", "jz_ybs", defaultConfig)
-
 			dialect = append(dialect, mysql.Open(sqlRead))
 		}
 
 		_ = db.Use(dbresolver.Register(dbresolver.Config{
-			// `db2` 作为 sources，`db3`、`db4` 作为 replicas
 			Sources:  []gorm.Dialector{mysql.Open(dsn)},
 			Replicas: dialect,
-			// sources/replicas 负载均衡策略
+			//  负载均衡策略
 			Policy: dbresolver.RandomPolicy{},
 		}))
+
 	}
 
 	sqlDB, err := db.DB()
@@ -89,12 +83,14 @@ func Mysql(name string) *gorm.DB {
 }
 
 func DisconnectMysql() {
+
 	mysqlDatabases.Range(func(key, value interface{}) bool {
 		db, _ := value.(*gorm.DB)
 		sqlDB, _ := db.DB()
 		sqlDB.Close()
 		return true
 	})
+
 	my_logger.Sugar.Info("disconnect mysql")
 }
 
@@ -109,8 +105,10 @@ func ping(sqlDB *sql.DB, name string) {
 func setDefault(sqlDB *sql.DB) *sql.DB {
 
 	sqlDB.SetMaxIdleConns(1024)
+
 	sqlDB.SetMaxOpenConns(1024)
-	sqlDB.SetConnMaxLifetime(time.Minute * 10) //连接超时10分钟，数据库的wait_timeout最好设置为11分钟
+
+	sqlDB.SetConnMaxLifetime(time.Minute * 10)
 
 	return sqlDB
 }

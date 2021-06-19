@@ -16,6 +16,7 @@ func (t JSONTimeDate) MarshalJSON() ([]byte, error) {
     formatted := fmt.Sprintf("\"%s\"", t.Format(InitDateTime))
     return []byte(formatted), nil
 }
+
 // MarshalJSON on JSONTimeDate format Time field with %Y-%m-%d %H:%M:%S
 func (t *JSONTimeDate) UnmarshalJSON(data []byte) ([]byte, error) {
     formatted := fmt.Sprintf("\"%s\"", t.Format(InitDateTime))

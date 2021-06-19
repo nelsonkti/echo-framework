@@ -18,7 +18,6 @@ require (
 	github.com/googollee/go-engine.io v1.4.3-0.20200220091802-9b2ab104b298 // indirect
 	github.com/googollee/go-socket.io v1.4.4
 	github.com/hashicorp/go-multierror v1.1.0 // indirect
-	github.com/jinzhu/gorm v1.9.15
 	github.com/judwhite/go-svc v1.1.2
 	github.com/kr/text v0.2.0 // indirect
 	github.com/labstack/echo/v4 v4.1.16

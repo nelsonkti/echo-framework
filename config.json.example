@@ -11,12 +11,12 @@
     [
       {
         "driver": "mysql",
-        "host": "192.168.10.10",
+        "host": "127.0.0.1",
         "port": "3306",
         "user": "homestead",
         "pwd": "secret",
-        "name": "jz_ybs",
-        "conn_name": "jz_ybs_read"
+        "name": "db",
+        "conn_name": "db_read"
       }
     ]
   ]

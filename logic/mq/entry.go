@@ -7,8 +7,8 @@ var nsqAddress string
 
 //启动Nsq服务
 func StartNsqServer(addr string, consumers []string) {
-    address = consumers
-    nsqAddress = addr
-    producer.StartNsqProducer(addr)
-    startNsqConsumer()
+	address = consumers
+	nsqAddress = addr
+	producer.StartNsqProducer(addr)
+	startNsqConsumer()
 }

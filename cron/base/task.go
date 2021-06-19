@@ -1,8 +1,7 @@
 package base
 
-
 type Task interface {
-    Rule() string
-    Run()
-    Name()string
+	Rule() string
+	Run()
+	Name() string
 }

@@ -1,8 +1,5 @@
 package config
 
-const masterSuffixName = "_master"
-
-
 type DBConfig struct{
 	Host string
 	Port string
@@ -15,8 +12,6 @@ type DBConfig struct{
 // 数据库和服务配置
 var (
 	MysqlConfig = make(map[string]DBConfig)
-
-	MasterSuffix = masterSuffixName
 
 	Memcache = []string{"0.0.0.0:11211"}
 

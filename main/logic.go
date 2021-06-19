@@ -73,7 +73,7 @@ func (p *logicProgram) Start() error {
 /**
 启动app
 */
-func newApp()  {
+func newApp() {
 	e := Echo
 
 	e.Binder = new(helper.Binder)
@@ -84,7 +84,6 @@ func newApp()  {
 
 	e.Logger.Fatal(e.Start(config.LogicHTTPListenIP))
 }
-
 
 func (p *logicProgram) Stop() error {
 	p.once.Do(func() {

@@ -1,76 +1,102 @@
-# 【echo-framework】
+```
+           _                  __                                             _    
+  ___  ___| |__   ___        / _|_ __ __ _ _ __ ___   _____      _____  _ __| | __
+ / _ \/ __| '_ \ / _ \ _____| |_| '__/ _` | '_ ` _ \ / _ \ \ /\ / / _ \| '__| |/ /
+|  __/ (__| | | | (_) |_____|  _| | | (_| | | | | | |  __/\ V  V / (_) | |  |   < 
+ \___|\___|_| |_|\___/      |_| |_|  \__,_|_| |_| |_|\___| \_/\_/ \___/|_|  |_|\_\
+                                                                                  
+```
 
-echo-framework是基于echo搭建用于快速开发的基础框架
+[echo-framework](https://github.com/nelsonkti/echo-framework) 是基于 echo 搭建用于快速开发的项目框架
 
-## 目录
+## 安装
+```
+go get -u github.com/nelsonkti/echo-framework
+```
 
-- [技术栈](#技术栈)
-
-- [项目结构](#项目结构)
-
-- [环境搭建](#环境搭建)
-  
-- [编码规范](#编码规范)
-  - [分支管理 git](#分支管理)
-  - [变量命名 驼峰式](#变量命名)
-  - [路由风格 restful](#路由风格)
-  - [生成protobuf](#生成protobuf)
-  
-## 技术栈 
-[[返回目录]](#目录)
-- Golang 尽量和最新版本保持一致
-- MySQl 5.7
-- gorm  数据库 orm
-- echo  http路由框架 
-- socketio  底层通信协议
+## 功能叙述
+- 支持 gorm、logger 日志、jwt、cron 定时任务、redis 等
+- mysql 数据库读写分离、 负载均衡
+- socket.io 通信协议
 - nsq 消息队列
-- Redis 缓存设备在线状态
+- 分布式部署
 
-## 项目结构 
-[[返回目录]](#目录)
-- logic 包含了所有业务逻辑
-
-- socket 通信相关的代码
-
+## 文件夹结构 
+- config 文件配置和初始化配置数据
+- cron 定时任务
+- lib 日常使用的库
+- logic logic 业务逻辑
 - main 程序启动入口, 主要可以启动 http
-
-## 环境搭建 
-[[返回目录]](#目录)
-
-- 项目的生产环境和测试环境都在远程服务器, 自己开发时需要部署本地环境
-
-- 本地需要安装 nsq, redis, (建议使用 docker)
-
-- 开发语言使用 golang, ide 使用 goland
+- routes 包含应用的所有路由定义
+- socket 通信相关的代码，以 socket.io 通信协议为主
 
 
-## 编码规范 
-[[返回目录]](#目录)
+- logic 目录
+    - http 包含了控制器、中间件以及表单请求、验证器等
+       - controllers 控制器层
+       - middleware 中间件
+       - models 模型层
+       - repository 业务层调用数据访问层
+       - responses 返回层
+       - services 服务层主要处理业务逻辑
+       - validators 表单验证器
+      
+    - mq nsq 生产者和消费者
+       - producer 生产者
 
-### 分支管理 
-[[返回目录]](#目录)
 
-每次开发时, 从最新的 uat 分支上, 创建自己的新功能分支 myname_feature, 
-开发完成后提交 合并请求 到 uat分支,
+## 项目介绍
+#### 项目默认支持 `nsq`、`memcache`、`redis`，如果不需要，可以再 `main` 文件夹下 注释以下代码
 
-测试时将自己的功能分支合并到 develop 进行测试,
-不要将 develop 合并到任何其他分支.
+`memcache` 连接
+```
+//连接 memcache
+db.ConnectMemcache(config.Memcache)
+```
 
-### 变量命名 
-[[返回目录]](#目录)
+`redis` 连接
+```
+//连接redis
+db.ConnectRedis(config.RedisIP, config.RedisPassword, 0, "default")
+```
 
-驼峰式, 小写开头, 例如 productTotal.
+`nsq` 连接
+```
+//连接redis
+go func() {
+    defer helper.RecoverPanic()
+    //producer.StartNsqProducer(config.NSQIP)
+    mq.StartNsqServer(config.NSQIP, config.NSQConsumers)
+}()
+```
 
-### 路由风格
-[[返回目录]](#目录)
+`cron` 本地默认不启动， 需要启动，去掉`if`就可以了
+```
+//启动定时任务
+if config.Env != "local" {
+    cron.RegisterCrons(config.RedisIP, config.RedisPassword)
+}
+```
 
-设计接口路由时遵循 restful 风格.
-uri 表示资源定位, method 表示操作资源的方法;  
-例如 put /chatroom/:id/member:mid 表示修改某群内某个成员
+`grom` 读写分离 [DBResolver](https://gorm.io/zh_CN/docs/dbresolver.html)
+```
+// 使用 Write 模式
+User.Model().Clauses(dbresolver.Write).First(&User)
+```
 
-### 生成protobuf
-[[返回目录]](#目录)
+运行logic
+```
+cd main
+go run logic.go
+```
 
-生成命令: protoc --go_out=. lib/protobuf/*.proto
+运行socket
+```
+cd main
+go run socket.go
+```
 
-也可以直接:make proto
+## 环境要求 
+
+- go >= 1.13
+

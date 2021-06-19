@@ -9,7 +9,6 @@ import (
 	"time"
 )
 
-
 func startNsqConsumer(localAddr string) {
 
 }
@@ -40,6 +39,3 @@ func nsqConsumer(topic, channel string, handle func(message *nsq.Message) error,
 		}
 	}
 }
-
-
-

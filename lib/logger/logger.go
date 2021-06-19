@@ -9,9 +9,7 @@ import (
 	"time"
 )
 
-
 var Sugar *zap.SugaredLogger
-
 
 func NewEncoderConfig() zapcore.EncoderConfig {
 	return zapcore.EncoderConfig{
