@@ -15,7 +15,7 @@ go get -u github.com/nelsonkti/echo-framework
 ```
 
 ## 功能叙述
-- 支持 gorm、logger 日志、jwt、cron 定时任务、redis 等
+- 支持 gorm、logger 日志、jwt、cron 定时任务、redis 、etcd等
 - mysql 数据库读写分离、 负载均衡
 - socket.io 通信协议
 - nsq 消息队列
@@ -41,7 +41,8 @@ go get -u github.com/nelsonkti/echo-framework
        - services 服务层主要处理业务逻辑
        - validators 表单验证器
       
-    - mq nsq 生产者和消费者
+    - nsq nsq 生产者和消费者
+       - consumer 消费者
        - producer 生产者
 
 
