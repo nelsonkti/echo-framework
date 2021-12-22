@@ -5,11 +5,14 @@ import (
 	"echo-framework/cron"
 	"echo-framework/lib/db"
 	"echo-framework/lib/helper"
+	"echo-framework/lib/localtion"
 	"echo-framework/lib/logger"
-	"echo-framework/logic/mq"
-	"echo-framework/logic/mq/producer"
+	"echo-framework/logic/nsq/consumer"
+	"echo-framework/logic/nsq/producer"
 	"echo-framework/routes"
-	"github.com/judwhite/go-svc/svc"
+	"echo-framework/util/xnsq"
+	"echo-framework/util/xnsq/service/registry"
+	"github.com/judwhite/go-svc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"os"
@@ -53,8 +56,17 @@ func (p *logicProgram) Start() error {
 
 	go func() {
 		defer helper.RecoverPanic()
-		//producer.StartNsqProducer(config.NSQIP)
-		mq.StartNsqServer(config.NSQIP, config.NSQConsumers)
+
+		server := xnsq.NewNsqServer(registry.Options{
+			NsqAddress:     config.NSQIP,
+			NSQConsumers:   config.NSQConsumers,
+			NSQServerHosts: config.NSQServerHosts,
+			Env:            config.Env,
+			LocalAddress:   localtion.GetLocalIP(),
+		})
+
+		server.Run(consumer.LogicConsumerHandler(server.Opt))
+
 	}()
 
 	//启动定时任务
@@ -88,7 +100,7 @@ func newApp() {
 func (p *logicProgram) Stop() error {
 	p.once.Do(func() {
 		defer routes.CancelRoute(Echo)
-		defer producer.StopProducer()
+		defer producer.LogicProducer.StopProducer()
 		defer db.DisconnectMysql()
 		defer db.DisconnectRedis()
 	})

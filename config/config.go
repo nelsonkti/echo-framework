@@ -2,7 +2,8 @@ package config
 
 // 基本配置
 var (
-	AppPath              = ""
+	AppName = "echo-framework"
+	AppPath = ""
 )
 
 // socket配置

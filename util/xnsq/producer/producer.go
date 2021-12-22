@@ -1,13 +1,17 @@
+/**
+** @创建时间 : 2021/11/13 16:05
+** @作者 : fzy
+ */
 package producer
 
 import (
-	"echo-framework/lib/logger"
 	"github.com/nsqio/go-nsq"
 	"time"
+	"echo-framework/lib/logger"
 )
 
-var producer *nsq.Producer
 var Separator = "@"
+var producer *nsq.Producer
 
 func StartNsqProducer(addr string) {
 	if producer != nil {
@@ -28,14 +32,24 @@ func StartNsqProducer(addr string) {
 	}
 }
 
-func Publish(topic, data string) {
+type Producer struct {
+}
+
+func (p *Producer) Publish(topic, data string) {
 	err := producer.Publish(topic, []byte(Separator+data))
 	if err != nil {
 		logger.Sugar.Error(err)
 	}
 }
 
-func DeferredPublish(deviceId, serverAddress, topic, data string, delay time.Duration) {
+func (p *Producer) DelayPublish(topic, data string, delay time.Duration) {
+	err := producer.DeferredPublish(topic, delay, []byte(Separator+data))
+	if err != nil {
+		logger.Sugar.Error(err)
+	}
+}
+
+func (p *Producer) DeferredPublish(deviceId, serverAddress, topic, data string, delay time.Duration) {
 	if serverAddress == "" {
 		//logger.Sugar.Infow("device not online:", "device_id:", deviceId, "topic:", topic)
 		return
@@ -48,14 +62,14 @@ func DeferredPublish(deviceId, serverAddress, topic, data string, delay time.Dur
 }
 
 // 指定服务发布
-func AssignServerPublish(serverAddress, topic, data string) {
+func (p *Producer) AssignServerPublish(serverAddress, topic, data string) {
 	err := producer.Publish(serverAddress+"."+topic, []byte(Separator+data))
 	if err != nil {
 		logger.Sugar.Error(err)
 	}
 }
 
-func AssignUuidPublish(uuid, topic, data string) {
+func (p *Producer) AssignUuidPublish(uuid, topic, data string) {
 	if uuid == "" {
 		logger.Sugar.Error("uuid为空")
 		return
@@ -66,7 +80,7 @@ func AssignUuidPublish(uuid, topic, data string) {
 	}
 }
 
-func StopProducer() {
+func (p *Producer) StopProducer() {
 	if producer != nil {
 		producer.Stop()
 	}

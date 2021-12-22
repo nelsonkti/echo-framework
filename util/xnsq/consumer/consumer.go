@@ -1,39 +1,38 @@
-package socket_mq
+/**
+** @创建时间 : 2021/11/13 16:35
+** @作者 : fzy
+ */
+package consumer
 
 import (
-	"echo-framework/config"
-	"echo-framework/lib/logger"
 	"github.com/nsqio/go-nsq"
 	"log"
 	"os"
 	"time"
+	"echo-framework/util/xnsq/service/registry"
 )
 
-func startNsqConsumer(localAddr string) {
-
-}
+var Options registry.Options
 
 // nsqConsumer 消费消息
-func nsqConsumer(topic, channel string, handle func(message *nsq.Message) error, concurrency int) {
-
+func NsqConsumer(topic, channel string, handle func(message *nsq.Message) error, concurrency int) {
 	conf := nsq.NewConfig()
 	conf.LookupdPollInterval = 1 * time.Second
-	conf.MaxInFlight = 1 + len(config.NSQServerHosts)
+	conf.MaxInFlight = 10 + len(Options.NSQServerHosts)
 
 	consumer, err := nsq.NewConsumer(topic, channel, conf)
 	if err != nil {
-		logger.Sugar.Error(err)
 		panic(err)
 	}
 	consumer.AddConcurrentHandlers(nsq.HandlerFunc(handle), concurrency)
 	consumer.SetLogger(log.New(os.Stderr, "", log.Flags()), nsq.LogLevelError)
 
-	err = consumer.ConnectToNSQD(nsqAddress)
+	err = consumer.ConnectToNSQD(Options.NsqAddress)
 	if err != nil {
 		panic(err)
 	}
-	if config.Env != "local" {
-		err = consumer.ConnectToNSQLookupds(address)
+	if Options.Env != "local" {
+		err = consumer.ConnectToNSQLookupds(Options.NSQConsumers)
 		if err != nil {
 			panic(err)
 		}
