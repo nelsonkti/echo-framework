@@ -62,12 +62,21 @@ db.ConnectRedis(config.RedisIP, config.RedisPassword, 0, "default")
 
 `nsq` 
 ```
-//连接redis
+//连接nsq
 go func() {
-    defer helper.RecoverPanic()
-    //producer.StartNsqProducer(config.NSQIP)
-    mq.StartNsqServer(config.NSQIP, config.NSQConsumers)
-}()
+		defer helper.RecoverPanic()
+
+		server := xnsq.NewNsqServer(registry.Options{
+			NsqAddress:     config.NSQIP,
+			NSQConsumers:   config.NSQConsumers,
+			NSQServerHosts: config.NSQServerHosts,
+			Env:            config.Env,
+			LocalAddress:   localtion.GetLocalIP(),
+		})
+
+		server.Run(consumer.LogicConsumerHandler(server.Opt))
+
+	}()
 ```
 
 `cron` 本地默认不启动， 需要启动，去掉`if`就可以了
