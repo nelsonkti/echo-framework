@@ -1,0 +1,53 @@
+app:
+  name: echo-framework
+  env: local
+#  path:
+#    app_path: "lllk/llkl"
+#    upload_path: "2244/llkl"
+#    download_path: "lll/llkl"
+#  domain:
+#    api_domain: "https://apixxxxx.com"
+#    web_domain: "https://web.xxxxx.com"
+#    app_domain: "https://app.xxxxx.com"
+server:
+  http:
+    port: 8004
+  #    timeout: 1s
+  socket:
+    port: 9001
+#    timeout: 1s
+data:
+  connection:
+    driver: mysql
+    database:
+      -
+        host: 129.204.239.12
+        read: [129.204.239.12]
+        port: 63308
+        database: jz_ybs
+        username: TestXYEnvUser
+        password: 4XLMNd0zjU2lSyPGitMZUx3bjCmnUN9m
+        alias: jz_ybs_alias
+      -
+        host: 129.204.239.12
+        write: [129.204.239.12]
+        port: 63308
+        database: yim_live
+        username: TestXYEnvUser
+        password: 4XLMNd0zjU2lSyPGitMZUx3bjCmnUN9m
+        alias: yim_live_alias
+  redis:
+    addr: 127.0.0.1:6379
+    read_timeout: 0.2s
+    write_timeout: 0.2s
+  memcache:
+    host: [localhost:2201]
+mq:
+  nsq:
+    host: nsqd:4150
+    consumer: [localhost:2379]
+etcd:
+  host: [localhost:2379]
+  open_tls: false
+  tls_path: /public/config/etcd/
+

@@ -2,7 +2,7 @@ package middleware
 
 import (
 	"echo-framework/lib/jwt"
-	"echo-framework/logic/http/responses"
+	"echo-framework/util/xrsp"
 	"github.com/labstack/echo/v4"
 	"net/http"
 	"time"
@@ -17,7 +17,7 @@ func Auth(next echo.HandlerFunc) echo.HandlerFunc {
 
 		tokenData, err := jwt.ParseToken(token)
 		if err != nil || tokenData.UserId == 0 || tokenData.ExpireAt < time.Now().UnixNano() {
-			return c.JSON(http.StatusUnauthorized, responses.Fail("invalid token"))
+			return c.JSON(http.StatusUnauthorized, xrsp.ErrorText("invalid token"))
 		}
 
 		c.Set("user_id", tokenData.UserId)

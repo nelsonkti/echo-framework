@@ -1,8 +1,10 @@
-package controllers
+package controller
 
 import (
-	"echo-framework/logic/http/models"
-	"echo-framework/logic/http/responses"
+	"echo-framework/logic/http/model"
+	"echo-framework/logic/http/service"
+	"echo-framework/logic/http/validator"
+	"echo-framework/util/xrsp"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )
@@ -19,8 +21,8 @@ func GetHello(context echo.Context) error {
 
 	pageResponse := NewPageResponse(data.PageRequest)
 
-	var res []models.EmployeesBase
-	EmployeesBase := models.EmployeesBase{}
+	var res []model.EmployeesBase
+	EmployeesBase := model.EmployeesBase{}
 	query := EmployeesBase.Model()
 
 	query = query.
@@ -31,7 +33,7 @@ func GetHello(context echo.Context) error {
 
 	pageResponse.Data = res
 
-	return context.JSON(http.StatusOK, responses.Success(pageResponse))
+	return context.JSON(http.StatusOK, xrsp.Data(pageResponse))
 }
 
 func GetHello2(ctx echo.Context) error {
@@ -44,8 +46,22 @@ func GetHello2(ctx echo.Context) error {
 	err := ctx.Bind(&data)
 
 	if err != nil {
-		return ctx.JSON(http.StatusLocked, responses.Fail(err.Error()))
+		return ctx.JSON(http.StatusLocked, xrsp.Error(err))
 	}
 
 	return ctx.String(http.StatusOK, "Hello, World")
+}
+
+func CreateUser(ctx echo.Context) error {
+	var requestData validator.UserRequest
+	err := ctx.Bind(&requestData)
+
+	if err != nil {
+		return ctx.JSON(http.StatusLocked, xrsp.Error(err))
+	}
+
+	var userService service.UserService
+	res := userService.Create(requestData)
+
+	return ctx.JSON(res.Status, res)
 }

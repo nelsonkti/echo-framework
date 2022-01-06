@@ -16,7 +16,6 @@ import (
 	_ "net/http/pprof"
 	"os"
 	"path/filepath"
-	"strconv"
 	"sync"
 	"syscall"
 )
@@ -48,27 +47,29 @@ func (p *socketProgram) Start() error {
 	}()
 
 	db.InitMysql()
-	// 连接redis
-	db.ConnectRedis(config.RedisIP, config.RedisPassword, 0, "default")
+
+	//连接 memcache
+	db.ConnectMemcache(config.AppConf.Data.Memcache.Host)
+
+	//连接redis
+	db.ConnectRedis(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password, 0, "default")
 
 	// 启动消息队列服务
 	go func() {
 		defer helper.RecoverPanic()
 
 		server := xnsq.NewNsqServer(registry.Options{
-			NsqAddress: config.NSQIP,
-			NSQConsumers: config.NSQConsumers,
-			NSQServerHosts: config.NSQServerHosts,
-			Env: config.Env,
-			LocalAddress: localtion.GetLocalIP(),
+			NsqAddress:     config.AppConf.Mq.Nsq.Host,
+			NSQConsumers:   config.AppConf.Mq.Nsq.Consumer,
+			Env:            config.AppConf.App.Env,
+			LocalAddress:   localtion.GetLocalIP(),
 		})
 
 		server.Run(consumer.SocketConsumerHandler(server.Opt))
 	}()
 
 	go func() {
-		port, _ := strconv.Atoi(config.ConnectTCPListenPort)
-		socketio_server.Start(port)
+		socketio_server.Start(int(config.AppConf.Server.Socket.Port))
 	}()
 
 	return nil

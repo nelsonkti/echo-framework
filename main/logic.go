@@ -12,6 +12,7 @@ import (
 	"echo-framework/routes"
 	"echo-framework/util/xnsq"
 	"echo-framework/util/xnsq/service/registry"
+	"fmt"
 	"github.com/judwhite/go-svc"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -49,20 +50,19 @@ func (p *logicProgram) Start() error {
 	db.InitMysql()
 
 	//连接 memcache
-	db.ConnectMemcache(config.Memcache)
+	db.ConnectMemcache(config.AppConf.Data.Memcache.Host)
 
 	//连接redis
-	db.ConnectRedis(config.RedisIP, config.RedisPassword, 0, "default")
+	db.ConnectRedis(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password, 0, "default")
 
 	go func() {
 		defer helper.RecoverPanic()
 
 		server := xnsq.NewNsqServer(registry.Options{
-			NsqAddress:     config.NSQIP,
-			NSQConsumers:   config.NSQConsumers,
-			NSQServerHosts: config.NSQServerHosts,
-			Env:            config.Env,
-			LocalAddress:   localtion.GetLocalIP(),
+			NsqAddress:   config.AppConf.Mq.Nsq.Host,
+			NSQConsumers: config.AppConf.Mq.Nsq.Consumer,
+			Env:          config.AppConf.App.Env,
+			LocalAddress: localtion.GetLocalIP(),
 		})
 
 		server.Run(consumer.LogicConsumerHandler(server.Opt))
@@ -70,8 +70,8 @@ func (p *logicProgram) Start() error {
 	}()
 
 	//启动定时任务
-	if config.Env != "local" {
-		cron.RegisterCrons(config.RedisIP, config.RedisPassword)
+	if config.AppConf.App.Env != "local" {
+		cron.RegisterCrons(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password)
 	}
 
 	// 启动app
@@ -94,7 +94,7 @@ func newApp() {
 	e.Use(middleware.CORS())
 	routes.Register(e)
 
-	e.Logger.Fatal(e.Start(config.LogicHTTPListenIP))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%d", config.AppConf.Server.Http.Port)))
 }
 
 func (p *logicProgram) Stop() error {

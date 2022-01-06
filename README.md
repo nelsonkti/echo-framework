@@ -11,7 +11,7 @@
 
 ## 安装
 ```
-go get -u github.com/nelsonkti/echo-framework
+git clone https://github.com/nelsonkti/echo-framework.git
 ```
 
 ## 功能叙述
