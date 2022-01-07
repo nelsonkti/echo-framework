@@ -15,101 +15,142 @@ import (
 	"time"
 )
 
-var mysqlDatabases sync.Map
+var Databases sync.Map
 
 const defaultConfig = "?parseTime=true&charset=utf8mb4&loc=Asia%2FShanghai"
 
 func InitMysql() {
 	for _, conf := range config.AppConf.Data.Connection.Database {
-		ConnectMysql(conf)
+		newDatabase().connect(conf)
 	}
-}
-
-func ConnectMysql(conf *pb.Data_Database) *gorm.DB {
-	var dialect []gorm.Dialector
-
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.Database, defaultConfig)
-
-	logLevel := logger.Silent
-
-	if config.AppConf.App.Env == "local" {
-		logLevel = logger.Info
-	}
-
-	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
-		Logger: logger.Default.LogMode(logLevel),
-	})
-
-	if err != nil {
-		my_logger.Sugar.Info(err)
-		panic(err)
-	}
-
-	if conf.Read != nil {
-
-		for _, v := range conf.Read {
-			sqlRead := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s", conf.Username, conf.Password, v, conf.Port, conf.Database, defaultConfig)
-			dialect = append(dialect, mysql.Open(sqlRead))
-		}
-
-		_ = db.Use(dbresolver.Register(dbresolver.Config{
-			Sources:  []gorm.Dialector{mysql.Open(dsn)},
-			Replicas: dialect,
-			//  负载均衡策略
-			Policy: dbresolver.RandomPolicy{},
-		}))
-
-	}
-
-	sqlDB, err := db.DB()
-
-	if err != nil {
-		my_logger.Sugar.Info("failed to connect mysql:" + conf.Database)
-		panic("failed to connect mysql:" + conf.Database)
-	}
-
-	ping(sqlDB, conf.Database)
-
-	sqlDB = setDefault(sqlDB)
-
-	mysqlDatabases.Store(conf.Database, db)
-
-	// 启用Logger，显示详细日志
-	return db
 }
 
 func Mysql(name string) *gorm.DB {
-	db, _ := mysqlDatabases.Load(name)
+	db, _ := Databases.Load(name)
 	return db.(*gorm.DB)
 }
 
 func DisconnectMysql() {
 
-	mysqlDatabases.Range(func(key, value interface{}) bool {
+	Databases.Range(func(key, value interface{}) bool {
 		db, _ := value.(*gorm.DB)
 		sqlDB, _ := db.DB()
-		sqlDB.Close()
+		_ = sqlDB.Close()
 		return true
 	})
 
 	my_logger.Sugar.Info("disconnect mysql")
 }
 
-func ping(sqlDB *sql.DB, name string) {
-	err := sqlDB.Ping()
+func newDatabase() *Db {
+	db := &Db{}
+
+	db.dbConfig = db.defaultConfig
+	db.connSlave = db.connectSlave
+	db.ping = db.defaultPing
+
+	return db
+}
+
+type nilFunc func()
+type connSlaveFunc func(s string)
+
+type Db struct {
+	db        *gorm.DB
+	sqlDb     *sql.DB
+	database  *pb.Data_Database
+	dbConfig  nilFunc
+	connSlave connSlaveFunc
+	ping      nilFunc
+}
+
+func (d *Db) connect(database *pb.Data_Database) {
+	d.database = database
+
+	dsn := tcpSprint(database, database.Host)
+
+	var err error
+	d.db, err = gorm.Open(mysql.Open(dsn), d.config())
+
 	if err != nil {
-		my_logger.Sugar.Info("failed to connect mysql:" + name)
-		panic("failed to connect mysql:" + name)
+		my_logger.Sugar.Info(err)
+		panic(err)
+	}
+
+	d.connSlave(dsn)
+
+	d.DB()
+	d.ping()
+
+	d.dbConfig()
+
+	Databases.Store(database.Database, d.db)
+}
+
+func (d *Db) config() *gorm.Config {
+	logLevel := logger.Silent
+
+	if config.AppConf.App.Env == "local" {
+		logLevel = logger.Info
+	}
+
+	return &gorm.Config{
+		Logger: logger.Default.LogMode(logLevel),
 	}
 }
 
-func setDefault(sqlDB *sql.DB) *sql.DB {
+func (d *Db) connectSlave(dsn string) {
+	if d.database.Read == nil {
+		return
+	}
 
-	sqlDB.SetMaxIdleConns(1024)
+	var dialect []gorm.Dialector
+	for _, v := range d.database.Read {
+		dialect = append(dialect, mysql.Open(tcpSprint(d.database, v)))
+	}
 
-	sqlDB.SetMaxOpenConns(1024)
+	err := d.db.Use(dbresolver.Register(dbresolver.Config{
+		Sources:  []gorm.Dialector{mysql.Open(dsn)},
+		Replicas: dialect,
+		//  负载均衡策略
+		Policy: dbresolver.RandomPolicy{},
+	}))
 
-	sqlDB.SetConnMaxLifetime(time.Minute * 10)
+	if err != nil {
+		panic(err)
+	}
 
-	return sqlDB
+}
+
+func (d *Db) DB() (Db *Db) {
+	sqlDb, err := d.db.DB()
+	if err != nil {
+		my_logger.Sugar.Info("failed to connect mysql:" + d.database.Database)
+		panic("failed to connect mysql:" + d.database.Database)
+	}
+	d.sqlDb = sqlDb
+
+	return
+}
+
+func (d *Db) defaultPing() {
+	err := d.sqlDb.Ping()
+	if err != nil {
+		my_logger.Sugar.Info("failed to connect mysql:" + d.database.Database)
+		panic("failed to connect mysql:" + d.database.Database)
+	}
+}
+
+func (d *Db) defaultConfig() {
+
+	d.sqlDb.SetMaxIdleConns(1024)
+
+	d.sqlDb.SetMaxOpenConns(1024)
+
+	d.sqlDb.SetConnMaxLifetime(time.Minute * 10)
+
+}
+
+func tcpSprint(conf *pb.Data_Database, network string) string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s", conf.Username, conf.Password, network, conf.Port, conf.Database, defaultConfig)
 }
