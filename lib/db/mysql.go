@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"echo-framework/config"
 	pb "echo-framework/config/pb"
-	my_logger "echo-framework/lib/logger"
+	applogger "echo-framework/lib/logger"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -39,7 +39,7 @@ func DisconnectMysql() {
 		return true
 	})
 
-	my_logger.Sugar.Info("disconnect mysql")
+	applogger.Sugar.Info("disconnect mysql")
 }
 
 func newDatabase() *Db {
@@ -72,11 +72,11 @@ func (d *Db) connect(database *pb.Data_Database) {
 	d.db, err = gorm.Open(mysql.Open(dsn), d.config())
 
 	if err != nil {
-		my_logger.Sugar.Info(err)
+		applogger.Sugar.Info(err)
 		panic(err)
 	}
 
-	d.slave.connect(d, dsn)
+	d.slave.database(d).connect(dsn)
 
 	d.DB()
 	d.ping()
@@ -124,7 +124,7 @@ func (d *Db) connectSlave(dsn string) {
 func (d *Db) DB() (Db *Db) {
 	sqlDb, err := d.db.DB()
 	if err != nil {
-		my_logger.Sugar.Info("failed to connect mysql:" + d.database.Database)
+		applogger.Sugar.Info("failed to connect mysql:" + d.database.Database)
 		panic("failed to connect mysql:" + d.database.Database)
 	}
 	d.sqlDb = sqlDb
@@ -135,7 +135,7 @@ func (d *Db) DB() (Db *Db) {
 func (d *Db) defaultPing() {
 	err := d.sqlDb.Ping()
 	if err != nil {
-		my_logger.Sugar.Info("failed to connect mysql:" + d.database.Database)
+		applogger.Sugar.Info("failed to connect mysql:" + d.database.Database)
 		panic("failed to connect mysql:" + d.database.Database)
 	}
 }
@@ -155,19 +155,26 @@ func tcpSprint(conf *pb.Data_Database, network string) string {
 }
 
 type slave struct {
+	db *Db
 }
 
-func (*slave) connect(d *Db, dsn string) {
-	if d.database.Read == nil {
+func (s *slave) database(d *Db) (slave *slave) {
+	s.db = d
+	return s
+}
+
+func (s *slave) connect(dsn string) {
+	db := *s.db
+	if db.database.Read == nil {
 		return
 	}
 
 	var dialect []gorm.Dialector
-	for _, v := range d.database.Read {
-		dialect = append(dialect, mysql.Open(tcpSprint(d.database, v)))
+	for _, v := range db.database.Read {
+		dialect = append(dialect, mysql.Open(tcpSprint(db.database, v)))
 	}
 
-	err := d.db.Use(dbresolver.Register(dbresolver.Config{
+	err := db.db.Use(dbresolver.Register(dbresolver.Config{
 		Sources:  []gorm.Dialector{mysql.Open(dsn)},
 		Replicas: dialect,
 		//  负载均衡策略
