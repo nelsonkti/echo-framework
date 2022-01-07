@@ -45,28 +45,27 @@ func DisconnectMysql() {
 func newDatabase() *Db {
 	db := &Db{}
 
+	db.slave = &slave{}
 	db.dbConfig = db.defaultConfig
-	db.connSlave = db.connectSlave
 	db.ping = db.defaultPing
 
 	return db
 }
 
 type nilFunc func()
-type connSlaveFunc func(s string)
 
 type Db struct {
-	db        *gorm.DB
-	sqlDb     *sql.DB
-	database  *pb.Data_Database
-	dbConfig  nilFunc
-	connSlave connSlaveFunc
-	ping      nilFunc
+	db       *gorm.DB
+	sqlDb    *sql.DB
+	database *pb.Data_Database
+	dbConfig nilFunc
+	slave    *slave
+	ping     nilFunc
 }
 
 func (d *Db) connect(database *pb.Data_Database) {
-	d.database = database
 
+	d.database = database
 	dsn := tcpSprint(database, database.Host)
 
 	var err error
@@ -77,7 +76,7 @@ func (d *Db) connect(database *pb.Data_Database) {
 		panic(err)
 	}
 
-	d.connSlave(dsn)
+	d.slave.connect(d, dsn)
 
 	d.DB()
 	d.ping()
@@ -153,4 +152,29 @@ func (d *Db) defaultConfig() {
 
 func tcpSprint(conf *pb.Data_Database, network string) string {
 	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s", conf.Username, conf.Password, network, conf.Port, conf.Database, defaultConfig)
+}
+
+type slave struct {
+}
+
+func (*slave) connect(d *Db, dsn string) {
+	if d.database.Read == nil {
+		return
+	}
+
+	var dialect []gorm.Dialector
+	for _, v := range d.database.Read {
+		dialect = append(dialect, mysql.Open(tcpSprint(d.database, v)))
+	}
+
+	err := d.db.Use(dbresolver.Register(dbresolver.Config{
+		Sources:  []gorm.Dialector{mysql.Open(dsn)},
+		Replicas: dialect,
+		//  负载均衡策略
+		Policy: dbresolver.RandomPolicy{},
+	}))
+
+	if err != nil {
+		panic(err)
+	}
 }
