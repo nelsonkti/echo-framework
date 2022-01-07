@@ -3,7 +3,7 @@ package db
 import (
 	"database/sql"
 	"echo-framework/config"
-	config2 "echo-framework/config/pb"
+	pb "echo-framework/config/pb"
 	my_logger "echo-framework/lib/logger"
 	"fmt"
 	"gorm.io/driver/mysql"
@@ -25,7 +25,7 @@ func InitMysql() {
 	}
 }
 
-func ConnectMysql(conf *config2.Data_Database) *gorm.DB {
+func ConnectMysql(conf *pb.Data_Database) *gorm.DB {
 	var dialect []gorm.Dialector
 
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s%s", conf.Username, conf.Password, conf.Host, conf.Port, conf.Database, defaultConfig)
