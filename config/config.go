@@ -1,5 +1,5 @@
 package config
 
 var (
-	AppSign = "demo"
+	JwtSecret = "demo"
 )

@@ -51,6 +51,6 @@ func MakeToken(data TokenData) string {
 		"expire_at": data.ExpireAt,
 	})
 
-	tokenString, _ := token.SignedString([]byte(config.AppSign))
+	tokenString, _ := token.SignedString([]byte(config.JwtSecret))
 	return tokenString
 }
