@@ -22,7 +22,7 @@ func ParseToken(tokenString string) (*TokenData, error) {
 		}
 
 		// hmacSampleSecret is a []byte containing your secret, e.g. []byte("my_secret_key")
-		return []byte(config.AppSign), nil
+		return []byte(config.JwtSecret), nil
 	})
 
 	if err != nil {
