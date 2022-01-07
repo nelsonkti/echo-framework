@@ -48,6 +48,7 @@ func newDatabase() *Db {
 	db.slave = &slave{}
 	db.dbConfig = db.defaultConfig
 	db.ping = db.defaultPing
+	db.DB = db.copyDb
 
 	return db
 }
@@ -61,6 +62,7 @@ type Db struct {
 	dbConfig nilFunc
 	slave    *slave
 	ping     nilFunc
+	DB       func() *Db
 }
 
 func (d *Db) connect(database *pb.Data_Database) {
@@ -78,8 +80,7 @@ func (d *Db) connect(database *pb.Data_Database) {
 
 	d.slave.database(d).connect(dsn)
 
-	d.DB()
-	d.ping()
+	d.DB().ping()
 
 	d.dbConfig()
 
@@ -121,15 +122,16 @@ func (d *Db) connectSlave(dsn string) {
 
 }
 
-func (d *Db) DB() (Db *Db) {
-	sqlDb, err := d.db.DB()
+func (d *Db) copyDb() *Db {
+	var err error
+	d.sqlDb, err = d.db.DB()
+
 	if err != nil {
 		applogger.Sugar.Info("failed to connect mysql:" + d.database.Database)
 		panic("failed to connect mysql:" + d.database.Database)
 	}
-	d.sqlDb = sqlDb
 
-	return
+	return d
 }
 
 func (d *Db) defaultPing() {
