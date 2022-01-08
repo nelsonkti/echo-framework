@@ -41,7 +41,10 @@ func ParseToken(tokenString string) (*TokenData, error) {
 		UserId = uint64(claims["user_id"].(float64))
 	}
 
-	return &TokenData{UserId: UserId, ExpireAt: int64(claims["exp"].(float64))}, nil
+	return &TokenData{
+		UserId: UserId,
+		ExpireAt: int64(claims["exp"].(float64)),
+	}, nil
 
 }
 
