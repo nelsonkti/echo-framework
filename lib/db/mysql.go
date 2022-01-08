@@ -122,7 +122,7 @@ func (d *database) connectSlave(dsn string) {
 
 }
 
-func (d *database) copyDb() *Db {
+func (d *database) copyDb() *database {
 	var err error
 	d.sqlDb, err = d.db.DB()
 
