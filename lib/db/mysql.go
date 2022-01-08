@@ -42,8 +42,8 @@ func DisconnectMysql() {
 	applogger.Sugar.Info("disconnect mysql")
 }
 
-func newDatabase() *Db {
-	db := &Db{}
+func newDatabase() *database {
+	db := &database{}
 
 	db.slave = &slave{}
 	db.dbConfig = db.defaultConfig
@@ -55,17 +55,17 @@ func newDatabase() *Db {
 
 type nilFunc func()
 
-type Db struct {
+type database struct {
 	db       *gorm.DB
 	sqlDb    *sql.DB
 	database *pb.Data_Database
 	dbConfig nilFunc
 	slave    *slave
 	ping     nilFunc
-	DB       func() *Db
+	DB       func() *database
 }
 
-func (d *Db) connect(database *pb.Data_Database) {
+func (d *database) connect(database *pb.Data_Database) {
 
 	d.database = database
 	dsn := tcpSprint(database, database.Host)
@@ -87,7 +87,7 @@ func (d *Db) connect(database *pb.Data_Database) {
 	Databases.Store(database.Database, d.db)
 }
 
-func (d *Db) config() *gorm.Config {
+func (d *database) config() *gorm.Config {
 	logLevel := logger.Silent
 
 	if config.AppConf.App.Env == "local" {
@@ -99,7 +99,7 @@ func (d *Db) config() *gorm.Config {
 	}
 }
 
-func (d *Db) connectSlave(dsn string) {
+func (d *database) connectSlave(dsn string) {
 	if d.database.Read == nil {
 		return
 	}
@@ -122,7 +122,7 @@ func (d *Db) connectSlave(dsn string) {
 
 }
 
-func (d *Db) copyDb() *Db {
+func (d *database) copyDb() *Db {
 	var err error
 	d.sqlDb, err = d.db.DB()
 
@@ -134,7 +134,7 @@ func (d *Db) copyDb() *Db {
 	return d
 }
 
-func (d *Db) defaultPing() {
+func (d *database) defaultPing() {
 	err := d.sqlDb.Ping()
 	if err != nil {
 		applogger.Sugar.Info("failed to connect mysql:" + d.database.Database)
@@ -142,7 +142,7 @@ func (d *Db) defaultPing() {
 	}
 }
 
-func (d *Db) defaultConfig() {
+func (d *database) defaultConfig() {
 
 	d.sqlDb.SetMaxIdleConns(1024)
 
@@ -157,10 +157,10 @@ func tcpSprint(conf *pb.Data_Database, network string) string {
 }
 
 type slave struct {
-	db *Db
+	db *database
 }
 
-func (s *slave) database(d *Db) (slave *slave) {
+func (s *slave) database(d *database) (slave *slave) {
 	s.db = d
 	return s
 }
