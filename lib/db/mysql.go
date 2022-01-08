@@ -10,7 +10,6 @@ import (
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
 	"gorm.io/plugin/dbresolver"
-	_ "gorm.io/plugin/dbresolver"
 	"sync"
 	"time"
 )
