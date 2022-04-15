@@ -1,7 +1,7 @@
 package cron
 
 import (
-	"echo-framework/cron/base"
+	"github.com/nelsonkti/echo-framework/cron/base"
 )
 
 func RegisterCrons(address, password string) {

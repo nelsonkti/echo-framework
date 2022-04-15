@@ -1,7 +1,7 @@
 package config
 
 import (
-	config "echo-framework/config/pb"
+	config "github.com/nelsonkti/echo-framework/config/pb"
 )
 
 var AppConf config.Conf

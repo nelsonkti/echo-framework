@@ -5,7 +5,7 @@
 package model
 
 import (
-	"echo-framework/lib/db"
+	"github.com/nelsonkti/echo-framework/lib/db"
 	"gorm.io/gorm"
 )
 

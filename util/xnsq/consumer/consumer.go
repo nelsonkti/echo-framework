@@ -5,11 +5,11 @@
 package consumer
 
 import (
+	"github.com/nelsonkti/echo-framework/util/xnsq/service/registry"
 	"github.com/nsqio/go-nsq"
 	"log"
 	"os"
 	"time"
-	"echo-framework/util/xnsq/service/registry"
 )
 
 var Options registry.Options
@@ -18,7 +18,7 @@ var Options registry.Options
 func NsqConsumer(topic, channel string, handle func(message *nsq.Message) error, concurrency int) {
 	conf := nsq.NewConfig()
 	conf.LookupdPollInterval = 1 * time.Second
-	conf.MaxInFlight = 10 + 1
+	conf.MaxInFlight = 1000
 
 	consumer, err := nsq.NewConsumer(topic, channel, conf)
 	if err != nil {

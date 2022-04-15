@@ -5,21 +5,26 @@
 package producer
 
 import (
+	"github.com/nelsonkti/echo-framework/lib/helper"
+	"github.com/nelsonkti/echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/util/xnsq/service/registry"
 	"github.com/nsqio/go-nsq"
 	"time"
-	"echo-framework/lib/logger"
 )
 
 var Separator = "@"
 var producer *nsq.Producer
+var Options registry.Options
 
-func StartNsqProducer(addr string) {
+func StartNsqProducer(opt registry.Options) {
+	Options = opt
 	if producer != nil {
 		return
 	}
+
 	var err error
 	cfg := nsq.NewConfig()
-	producer, err = nsq.NewProducer(addr, cfg)
+	producer, err = nsq.NewProducer(opt.NsqAddress, cfg)
 	if nil != err {
 		logger.Sugar.Info(err)
 		panic("nsq new panic")
@@ -30,6 +35,11 @@ func StartNsqProducer(addr string) {
 		logger.Sugar.Info(err)
 		panic("nsq ping panic")
 	}
+
+	SetOngoingIp(opt.LocalAddress)
+
+	// 清理包含ip的旧topic
+	go ClearContainIpTopic()
 }
 
 type Producer struct {
@@ -84,5 +94,8 @@ func (p *Producer) StopProducer() {
 	if producer != nil {
 		producer.Stop()
 	}
+
+	SetEndedIp(helper.GetLocalIP())
+
 	logger.Sugar.Info("stop nsq producer")
 }

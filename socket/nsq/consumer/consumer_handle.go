@@ -4,8 +4,4 @@
  */
 package consumer
 
-
-
 var Separator = "@"
-
-

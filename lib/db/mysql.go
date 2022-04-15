@@ -2,9 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"echo-framework/config"
-	pb "echo-framework/config/pb"
-	applogger "echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/config"
+	pb "github.com/nelsonkti/echo-framework/config/pb"
+	applogger "github.com/nelsonkti/echo-framework/lib/logger"
 	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

@@ -1,7 +1,7 @@
 package helper
 
 import (
-	"echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 	"fmt"
 	"math"
 	"net"

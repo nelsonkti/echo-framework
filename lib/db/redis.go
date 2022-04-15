@@ -1,7 +1,7 @@
 package db
 
 import (
-	"echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 	"github.com/go-redis/redis"
 	"sync"
 )

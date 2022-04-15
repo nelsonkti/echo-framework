@@ -70,7 +70,6 @@ go func() {
 		server := xnsq.NewNsqServer(registry.Options{
 			NsqAddress:     config.NSQIP,
 			NSQConsumers:   config.NSQConsumers,
-			NSQServerHosts: config.NSQServerHosts,
 			Env:            config.Env,
 			LocalAddress:   localtion.GetLocalIP(),
 		})

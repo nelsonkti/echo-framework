@@ -5,10 +5,10 @@
 package service
 
 import (
-	"echo-framework/logic/http/model"
-	"echo-framework/logic/http/repository"
-	"echo-framework/logic/http/validator"
-	"echo-framework/util/xrsp"
+	"github.com/nelsonkti/echo-framework/logic/http/model"
+	"github.com/nelsonkti/echo-framework/logic/http/repository"
+	"github.com/nelsonkti/echo-framework/logic/http/validator"
+	"github.com/nelsonkti/echo-framework/util/xrsp"
 )
 
 type UserService struct {

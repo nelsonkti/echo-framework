@@ -1,7 +1,7 @@
 package socketio_server
 
 import (
-	"echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 	"fmt"
 	"github.com/googollee/go-socket.io"
 	engineio "github.com/googollee/go-socket.io/engineio"
@@ -31,7 +31,6 @@ func Start(port int) {
 		},
 	})
 
-
 	server.OnConnect(NameSpace, func(s socketio.Conn) error {
 		return nil
 	})
@@ -43,7 +42,6 @@ func Start(port int) {
 	server.OnDisconnect(NameSpace, func(s socketio.Conn, reason string) {
 
 	})
-
 
 	go server.Serve()
 	defer server.Close()
@@ -59,5 +57,3 @@ func StopDevice() {
 
 	logger.Sugar.Info("stop device")
 }
-
-

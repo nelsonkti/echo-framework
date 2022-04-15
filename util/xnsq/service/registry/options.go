@@ -5,8 +5,9 @@
 package registry
 
 type Options struct {
-	NsqAddress     string
-	NSQConsumers   []string
-	Env            string
-	LocalAddress   string
+	NsqAddress      string
+	NSQConsumers    []string
+	NSQAdminAddress string
+	Env             string
+	LocalAddress    string
 }

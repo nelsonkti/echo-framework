@@ -5,10 +5,10 @@
 package config
 
 import (
-	config "echo-framework/config/pb"
-	_ "echo-framework/util/xencoding/json"
-	_ "echo-framework/util/xencoding/yaml"
-	"echo-framework/util/xfile"
+	config "github.com/nelsonkti/echo-framework/config/pb"
+	_ "github.com/nelsonkti/echo-framework/util/xencoding/json"
+	_ "github.com/nelsonkti/echo-framework/util/xencoding/yaml"
+	"github.com/nelsonkti/echo-framework/util/xfile"
 	"os"
 )
 
@@ -68,6 +68,7 @@ func appPath(f fuc) {
 		AppPath:      containerPath(defaultAppPath),
 		UploadPath:   containerPath(defaultUploadPath),
 		DownloadPath: containerPath(defaultDownloadPath),
+		LogPath:      containerPath(defaultLogPath),
 	}
 }
 
@@ -107,4 +108,13 @@ func defaultDownloadPath() string {
 	}
 
 	return DownloadPath
+}
+
+func defaultLogPath() string {
+
+	if path := AppConf.App.Path.LogPath; path != "" {
+		return path
+	}
+
+	return AppConf.App.Path.AppPath
 }

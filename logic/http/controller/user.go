@@ -1,10 +1,10 @@
 package controller
 
 import (
-	"echo-framework/logic/http/model"
-	"echo-framework/logic/http/service"
-	"echo-framework/logic/http/validator"
-	"echo-framework/util/xrsp"
+	"github.com/nelsonkti/echo-framework/logic/http/model"
+	"github.com/nelsonkti/echo-framework/logic/http/service"
+	"github.com/nelsonkti/echo-framework/logic/http/validator"
+	"github.com/nelsonkti/echo-framework/util/xrsp"
 	"github.com/labstack/echo/v4"
 	"net/http"
 )

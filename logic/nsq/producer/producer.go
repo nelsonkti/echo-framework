@@ -4,7 +4,7 @@
  */
 package producer
 
-import "echo-framework/util/xnsq/producer"
+import "github.com/nelsonkti/echo-framework/util/xnsq/producer"
 
 var Separator = "@"
 

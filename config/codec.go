@@ -5,8 +5,8 @@
 package config
 
 import (
-	"echo-framework/util/xencoding"
-	"echo-framework/util/xfile"
+	"github.com/nelsonkti/echo-framework/util/xencoding"
+	"github.com/nelsonkti/echo-framework/util/xfile"
 	"encoding/json"
 	"errors"
 	"fmt"

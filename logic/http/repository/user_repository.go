@@ -4,7 +4,7 @@
  */
 package repository
 
-import "echo-framework/logic/http/model"
+import "github.com/nelsonkti/echo-framework/logic/http/model"
 
 type UserRepository struct {
 }

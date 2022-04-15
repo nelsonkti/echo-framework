@@ -1,8 +1,8 @@
 package jwt
 
 import (
-	"echo-framework/config"
-	"echo-framework/lib/helper"
+	"github.com/nelsonkti/echo-framework/config"
+	"github.com/nelsonkti/echo-framework/lib/helper"
 	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
@@ -42,7 +42,7 @@ func ParseToken(tokenString string) (*TokenData, error) {
 	}
 
 	return &TokenData{
-		UserId: UserId,
+		UserId:   UserId,
 		ExpireAt: int64(claims["exp"].(float64)),
 	}, nil
 

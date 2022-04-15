@@ -5,9 +5,9 @@
 package xnsq
 
 import (
-	"echo-framework/util/xnsq/producer"
-	"echo-framework/util/xnsq/server"
-	"echo-framework/util/xnsq/service/registry"
+	"github.com/nelsonkti/echo-framework/util/xnsq/producer"
+	"github.com/nelsonkti/echo-framework/util/xnsq/server"
+	"github.com/nelsonkti/echo-framework/util/xnsq/service/registry"
 )
 
 type NSQServer struct {
@@ -25,7 +25,7 @@ func (n *NSQServer) Run(c server.ConsumerHandler) (NSQServer *NSQServer) {
 }
 
 func (n *NSQServer) startNsqProducer() (NSQServer *NSQServer) {
-	producer.StartNsqProducer(n.Opt.NsqAddress)
+	producer.StartNsqProducer(n.Opt)
 	return
 }
 

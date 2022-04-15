@@ -2,8 +2,8 @@ package routes
 
 import (
 	"context"
-	"echo-framework/lib/logger"
-	"echo-framework/logic/http/controller"
+	"github.com/nelsonkti/echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/logic/http/controller"
 	"github.com/labstack/echo/v4"
 	"time"
 )

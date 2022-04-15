@@ -6,6 +6,6 @@ var Memcache *memcache.Client
 
 //连接memcache
 func ConnectMemcache(server []string) *memcache.Client {
-    Memcache = memcache.New(server...)
-    return Memcache
+	Memcache = memcache.New(server...)
+	return Memcache
 }

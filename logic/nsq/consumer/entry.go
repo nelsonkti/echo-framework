@@ -5,9 +5,9 @@
 package consumer
 
 import (
-	"echo-framework/util/xnsq/consumer"
-	"echo-framework/util/xnsq/server"
-	"echo-framework/util/xnsq/service/registry"
+	"github.com/nelsonkti/echo-framework/util/xnsq/consumer"
+	"github.com/nelsonkti/echo-framework/util/xnsq/server"
+	"github.com/nelsonkti/echo-framework/util/xnsq/service/registry"
 )
 
 func LogicConsumerHandler(opt registry.Options) server.ConsumerHandler {

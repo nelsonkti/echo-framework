@@ -7,7 +7,7 @@ package xetcd
 import (
 	"crypto/tls"
 	"crypto/x509"
-	"echo-framework/lib/logger"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 	clientv3 "go.etcd.io/etcd/client/v3"
 	"io/ioutil"
 	"time"
@@ -23,6 +23,7 @@ type Config struct {
 	TlsPath     string
 	CAConfig    CAConfig
 	Pfx         string
+	Env         string
 }
 
 type CAConfig struct {
@@ -36,6 +37,8 @@ func New(cfg Config) {
 	// 启动 etcd 服务
 
 	var err error
+
+	env(&cfg)
 
 	Client, err = clientv3.New(clientv3.Config{
 		Endpoints:   cfg.Endpoints,
@@ -130,4 +133,12 @@ func defaultTlsCa(cafg *CAConfig) {
 	}
 
 	cafg.Ca = cafg.Path + cafg.Ca
+}
+
+func env(cfg *Config) {
+	if cfg.Env == "production" {
+		cfg.TlsPath = cfg.TlsPath + "prod" + "/"
+	} else {
+		cfg.TlsPath = cfg.TlsPath + "dev" + "/"
+	}
 }

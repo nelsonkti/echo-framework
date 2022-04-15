@@ -5,7 +5,7 @@
 package yaml
 
 import (
-	"echo-framework/util/xencoding"
+	"github.com/nelsonkti/echo-framework/util/xencoding"
 	"gopkg.in/yaml.v3"
 )
 

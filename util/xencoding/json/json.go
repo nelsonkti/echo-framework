@@ -5,7 +5,7 @@
 package json
 
 import (
-	"echo-framework/util/xencoding"
+	"github.com/nelsonkti/echo-framework/util/xencoding"
 	"encoding/json"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
