@@ -95,5 +95,5 @@ func (p *Producer) StopProducer() {
 
 func (p *Producer) DeleteTopicByStop() {
 	topic := NewTopic(Options)
-	topic.DeleteByContain("10.115.1.84")
+	topic.DeleteByContain(Options.LocalAddress)
 }
