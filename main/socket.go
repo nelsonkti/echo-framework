@@ -99,7 +99,7 @@ func (p *socketProgram) Stop() error {
 		defer db.DisconnectMysql()
 		defer db.DisconnectRedis()
 		defer xetcd.Close()
-		defer producer.SocketProducer.StopProducer()
+		defer producer.SocketProducer.Stop()
 		defer socketio_server.StopDevice()
 	})
 	return nil

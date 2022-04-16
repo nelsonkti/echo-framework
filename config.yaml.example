@@ -36,8 +36,9 @@ data:
     host: [localhost:2201]
 mq:
   nsq:
-    host: nsqd:4150
-    consumer: [localhost:2379]
+    host: 0.0.0.0:4150
+    consumer: [0.0.0.0:4161]
+    admin_address: 0.0.0.0:4171
 etcd:
   host: [localhost:2379]
   open_tls: false

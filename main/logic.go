@@ -119,7 +119,7 @@ func (p *logicProgram) Stop() error {
 		defer db.DisconnectRedis()
 		defer xetcd.Close()
 		defer routes.CancelRoute(Echo)
-		defer producer.LogicProducer.StopProducer()
+		defer producer.LogicProducer.Stop()
 	})
 	return nil
 }

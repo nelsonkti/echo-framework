@@ -63,6 +63,7 @@ func (c *Client) Get(router string) ([]byte, error) {
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
 	logger.Sugar.Error(err)
+
 	return body, err
 }
 
@@ -83,9 +84,11 @@ func (c *Client) Delete(router string) ([]byte, error) {
 
 	defer res.Body.Close()
 	body, err := ioutil.ReadAll(res.Body)
+
 	if err != nil {
 		logger.Sugar.Error(err)
 		return nil, err
 	}
+
 	return body, err
 }

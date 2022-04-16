@@ -5,7 +5,6 @@
 package producer
 
 import (
-	"github.com/nelsonkti/echo-framework/lib/helper"
 	"github.com/nelsonkti/echo-framework/lib/logger"
 	"github.com/nelsonkti/echo-framework/util/xnsq/service/registry"
 	"github.com/nsqio/go-nsq"
@@ -17,6 +16,7 @@ var producer *nsq.Producer
 var Options registry.Options
 
 func StartNsqProducer(opt registry.Options) {
+
 	Options = opt
 	if producer != nil {
 		return
@@ -35,11 +35,6 @@ func StartNsqProducer(opt registry.Options) {
 		logger.Sugar.Info(err)
 		panic("nsq ping panic")
 	}
-
-	SetOngoingIp(opt.LocalAddress)
-
-	// 清理包含ip的旧topic
-	go ClearContainIpTopic()
 }
 
 type Producer struct {
@@ -95,7 +90,10 @@ func (p *Producer) StopProducer() {
 		producer.Stop()
 	}
 
-	SetEndedIp(helper.GetLocalIP())
-
 	logger.Sugar.Info("stop nsq producer")
+}
+
+func (p *Producer) DeleteTopicByStop() {
+	topic := NewTopic(Options)
+	topic.DeleteByContain("10.115.1.84")
 }

@@ -8,4 +8,13 @@ import "github.com/nelsonkti/echo-framework/util/xnsq/producer"
 
 var Separator = "@"
 
-var SocketProducer producer.Producer
+var SocketProducer Producer
+
+type Producer struct {
+	producer.Producer
+}
+
+// 退出
+func (l *Producer) Stop() {
+	l.Producer.StopProducer()
+}

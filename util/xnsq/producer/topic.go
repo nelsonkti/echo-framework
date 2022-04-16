@@ -6,53 +6,39 @@ package producer
 
 import (
 	"github.com/nelsonkti/echo-framework/lib/logger"
-	"github.com/nelsonkti/echo-framework/util/xetcd"
 	"github.com/nelsonkti/echo-framework/util/xnsq/api"
-	string2 "github.com/nelsonkti/echo-framework/util/xnsq/util/string"
-	"time"
+	"github.com/nelsonkti/echo-framework/util/xnsq/service/registry"
+	"strings"
 )
 
 var nsqApiClient *api.Client
 
-func DeleteTopic(topic string) {
+func NewTopic(opt registry.Options) *Topic {
+	return &Topic{opt: opt}
+}
+
+type Topic struct {
+	opt registry.Options
+}
+
+// 删除
+func (t *Topic) Delete(topic string) {
 	err := nsqApiClient.Topic().Delete(topic)
 	if err != nil {
 		logger.Sugar.Error(err)
 	}
 }
 
-// 清理包含ip的旧topic
-func ClearContainIpTopic() {
-	time.Sleep(time.Second * 20)
-	locker := xetcd.Locker("clear:contain:ip:topic")
-	defer locker.Unlock()
-	locker.Lock()
-
-	// 获取差集的ip
-	ips := GetEndedOldTp()
-
-	// 清楚所有的旧ip记录
-	for _, ip := range GetEndedIp() {
-		DelEndedIp(ip)
-	}
-
-	// 清楚所有的新ip记录
-	for _, ip1 := range GetOngoingIp() {
-		DelOngoingIp(ip1)
-	}
-
-	if len(ips) == 0 {
-		return
-	}
+// 删除类似的topic
+func (t *Topic) DeleteByContain(value string) {
 
 	// 获取所有的 topic
-	nsqApiClient = api.NewClient(Options)
+	nsqApiClient = api.NewClient(t.opt)
 	topics, _ := nsqApiClient.Topic().QueryAll()
 
 	for _, topic := range topics {
-		if string2.ContainArray(ips, topic) {
-			go DeleteTopic(topic)
+		if strings.Contains(topic, value) {
+			 t.Delete(topic)
 		}
 	}
-
 }
