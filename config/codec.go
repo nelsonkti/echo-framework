@@ -1,15 +1,14 @@
-/**
-** @创建时间 : 2022/1/6 09:23
-** @作者 : fzy
- */
+// Package api
+// @Author fuzengyao
+// @Date 2022-11-09 11:18:11
 package config
 
 import (
-	"github.com/nelsonkti/echo-framework/util/xencoding"
-	"github.com/nelsonkti/echo-framework/util/xfile"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/nelsonkti/echo-framework/util/xencoding"
+	"github.com/nelsonkti/echo-framework/util/xfile"
 	"google.golang.org/protobuf/encoding/protojson"
 	"google.golang.org/protobuf/proto"
 )

@@ -1,11 +1,10 @@
-/**
-** @创建时间 : 2021/11/15 11:45
-** @作者 : fzy
- */
+// Package consumer
+// @Author fuzengyao
+// @Date 2022-11-09 11:15:32
 package consumer
 
 var Separator = "@"
 
-func test()  {
-	
+func test() {
+
 }

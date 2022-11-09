@@ -1,12 +1,18 @@
-/**
-** @创建时间 : 2022/1/6 10:51
-** @作者 : fzy
- */
+// Package repository
+// @Author fuzengyao
+// @Date 2022-11-09 11:15:09
 package repository
 
 import "github.com/nelsonkti/echo-framework/logic/http/model"
 
 type UserRepository struct {
+	Model *model.UserModel
+}
+
+func NewUserRepository() *UserRepository {
+	return &UserRepository{
+		Model: &model.UserModel{},
+	}
 }
 
 func (ur *UserRepository) Create(data model.UserModel) error {

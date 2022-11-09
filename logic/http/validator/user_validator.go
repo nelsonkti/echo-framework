@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2022/1/6 10:46
-** @作者 : fzy
- */
+// Package validator
+// @Author fuzengyao
+// @Date 2022-11-09 11:15:24
 package validator
 
 type UserRequest struct {

@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2022/1/5 11:17
-** @作者 : fzy
- */
+// Package api
+// @Author fuzengyao
+// @Date 2022-11-09 11:18:11
 package config
 
 import (

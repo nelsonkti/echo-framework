@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2022/1/6 10:52
-** @作者 : fzy
- */
+// Package model
+// @Author fuzengyao
+// @Date 2022-11-09 11:15:02
 package model
 
 import (

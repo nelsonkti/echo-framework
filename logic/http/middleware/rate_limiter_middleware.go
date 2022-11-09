@@ -1,14 +1,13 @@
-/**
-** @创建时间 : 2022/3/26 11:36
-** @作者 : fzy
- */
+// Package middleware
+// @Author fuzengyao
+// @Date 2022-11-09 11:14:41
 package middleware
 
 import (
-	"github.com/nelsonkti/echo-framework/lib/logger"
 	"github.com/go-kratos/aegis/ratelimit"
 	"github.com/go-kratos/aegis/ratelimit/bbr"
 	"github.com/labstack/echo/v4"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 	"net/http"
 	"time"
 )

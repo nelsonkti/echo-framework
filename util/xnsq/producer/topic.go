@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2022/3/22 17:50
-** @作者 : fzy
- */
+// Package api
+// @Author fuzengyao
+// @Date 2022-11-09 11:18:11
 package producer
 
 import (
@@ -38,7 +37,7 @@ func (t *Topic) DeleteByContain(value string) {
 
 	for _, topic := range topics {
 		if strings.Contains(topic, value) {
-			 t.Delete(topic)
+			t.Delete(topic)
 		}
 	}
 }

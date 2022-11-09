@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2022/1/4 17:25
-** @作者 : fzy
- */
+// Package xencoding
+// @Author fuzengyao
+// @Date 2022-11-09 11:17:27
 package xencoding
 
 import (

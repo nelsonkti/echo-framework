@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2021/12/6 17:38
-** @作者 : fzy
- */
+// Package xetcd
+// @Author fuzengyao
+// @Date 2022-11-09 11:17:43
 package xetcd
 
 import (

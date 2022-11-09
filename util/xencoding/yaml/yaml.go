@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2022/1/4 17:31
-** @作者 : fzy
- */
+// Package yaml
+// @Author fuzengyao
+// @Date 2022-11-09 11:17:16
 package yaml
 
 import (

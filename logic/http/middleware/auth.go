@@ -1,9 +1,9 @@
 package middleware
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/nelsonkti/echo-framework/lib/jwt"
 	"github.com/nelsonkti/echo-framework/util/xrsp"
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"time"
 )

@@ -1,12 +1,11 @@
-/**
-** @创建时间 : 2022/3/21 09:38
-** @作者 : fzy
- */
+// Package api
+// @Author fuzengyao
+// @Date 2022-11-09 11:18:11
 package api
 
 import (
-	"github.com/nelsonkti/echo-framework/lib/logger"
 	"encoding/json"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 )
 
 type Topic struct {

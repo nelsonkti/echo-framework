@@ -1,7 +1,6 @@
-/**
-** @创建时间 : 2021/11/15 15:10
-** @作者 : fzy
- */
+// Package producer
+// @Author fuzengyao
+// @Date 2022-11-09 11:15:43
 package producer
 
 import (
