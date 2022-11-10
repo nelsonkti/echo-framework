@@ -1,6 +1,6 @@
-// Package api
+// Package config
 // @Author fuzengyao
-// @Date 2022-11-09 11:18:11
+// @Date 2022-11-10 10:53:48
 package config
 
 import (

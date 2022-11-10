@@ -25,7 +25,6 @@ type Response *RespData
 
 func Error(err error, code ...int) *RespData {
 	codeInt := CodeFail
-
 	status := http.StatusBadRequest
 	if len(code) > 0 {
 		codeInt = code[0]
@@ -41,7 +40,6 @@ func Error(err error, code ...int) *RespData {
 
 func ErrorText(text string, code ...int) *RespData {
 	codeInt := CodeFail
-
 	status := http.StatusBadRequest
 	if len(code) > 0 {
 		codeInt = code[0]

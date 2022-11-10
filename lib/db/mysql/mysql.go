@@ -27,8 +27,8 @@ func Connect() {
 func Session(name string) *gorm.DB {
 	db, _ := Databases.Load(name)
 	if db == nil {
-		panic("db connection fail.")
 		applogger.Sugar.Error("db connection fail.")
+		panic("db connection fail.")
 	}
 	return db.(*gorm.DB)
 }

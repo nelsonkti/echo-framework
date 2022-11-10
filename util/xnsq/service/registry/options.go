@@ -1,6 +1,6 @@
-// Package api
+// Package registry
 // @Author fuzengyao
-// @Date 2022-11-09 11:18:11
+// @Date 2022-11-10 11:07:10
 package registry
 
 type Options struct {
