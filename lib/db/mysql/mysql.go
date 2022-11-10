@@ -1,11 +1,11 @@
-package db
+package mysql
 
 import (
 	"database/sql"
+	"fmt"
 	"github.com/nelsonkti/echo-framework/config"
 	pb "github.com/nelsonkti/echo-framework/config/pb"
 	applogger "github.com/nelsonkti/echo-framework/lib/logger"
-	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -18,19 +18,22 @@ var Databases sync.Map
 
 const defaultConfig = "?parseTime=true&charset=utf8mb4&loc=Asia%2FShanghai"
 
-func InitMysql() {
+func Connect() {
 	for _, conf := range config.AppConf.Data.Connection.Database {
 		newDatabase().connect(conf)
 	}
 }
 
-func Mysql(name string) *gorm.DB {
+func Session(name string) *gorm.DB {
 	db, _ := Databases.Load(name)
+	if db == nil {
+		panic("db connection fail.")
+		applogger.Sugar.Error("db connection fail.")
+	}
 	return db.(*gorm.DB)
 }
 
-func DisconnectMysql() {
-
+func Disconnect() {
 	Databases.Range(func(key, value interface{}) bool {
 		db, _ := value.(*gorm.DB)
 		sqlDB, _ := db.DB()

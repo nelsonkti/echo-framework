@@ -1,11 +1,11 @@
 package model
 
 import (
-	"github.com/nelsonkti/echo-framework/lib/db"
+	"github.com/nelsonkti/echo-framework/lib/db/mysql/db"
 	"gorm.io/gorm"
 )
 
-// EmployeesBase struct is a row record of the employees_base table in the jz_ybs database
+// EmployeesBase struct is a row record of the employees_base table in the xx database
 type EmployeesBase struct {
 	BaseModel
 	//[ 0] id                                             ubigint              null: false  primary: true   isArray: false  auto: true   col: ubigint         len: -1      default: []
@@ -15,7 +15,7 @@ type EmployeesBase struct {
 }
 
 func (m EmployeesBase) Model() *gorm.DB {
-	return db.Mysql((&m).Connection()).Model(&m)
+	return db.Connect((&m).Connection()).Model(&m)
 }
 
 func (*EmployeesBase) Connection() string {

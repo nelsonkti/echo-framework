@@ -6,8 +6,6 @@ import (
 )
 
 func ProtoMarshal(m protoreflect.ProtoMessage) []byte {
-
 	res, _ := proto.Marshal(m)
-
 	return res
 }

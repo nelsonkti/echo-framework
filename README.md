@@ -52,13 +52,13 @@ git clone https://github.com/nelsonkti/echo-framework.git
 `memcache` 
 ```
 //连接 memcache
-db.ConnectMemcache(config.Memcache)
+memcache.Connect(config.Memcache)
 ```
 
 `redis` 
 ```
 //连接redis
-db.ConnectRedis(config.RedisIP, config.RedisPassword, 0, "default")
+redis.Connect(config.RedisIP, config.RedisPassword, 0, "default")
 ```
 
 `nsq` 
@@ -83,7 +83,7 @@ go func() {
 ```
 //启动定时任务
 if config.Env != "local" {
-    cron.RegisterCrons(config.RedisIP, config.RedisPassword)
+    cron.Register(config.RedisIP, config.RedisPassword)
 }
 ```
 
@@ -107,5 +107,5 @@ go run socket.go
 
 ## 环境要求 
 
-- go >= 1.16
+- go >= 1.18
 

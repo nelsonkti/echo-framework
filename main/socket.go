@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"github.com/judwhite/go-svc"
 	"github.com/nelsonkti/echo-framework/config"
-	"github.com/nelsonkti/echo-framework/lib/db"
+	"github.com/nelsonkti/echo-framework/lib/db/memcache"
+	"github.com/nelsonkti/echo-framework/lib/db/mysql"
+	"github.com/nelsonkti/echo-framework/lib/db/redis"
 	"github.com/nelsonkti/echo-framework/lib/helper"
 	"github.com/nelsonkti/echo-framework/lib/localtion"
 	"github.com/nelsonkti/echo-framework/lib/logger"
@@ -56,13 +58,13 @@ func (p *socketProgram) Start() error {
 		log.Println(http.ListenAndServe("0.0.0.0:6060", nil))
 	}()
 
-	db.InitMysql()
+	mysql.Connect()
 
 	//连接 memcache
-	db.ConnectMemcache(config.AppConf.Data.Memcache.Host)
+	memcache.Connect(config.AppConf.Data.Memcache.Host)
 
 	//连接redis
-	db.ConnectRedis(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password, 0, "default")
+	redis.Connect(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password, 0, "default")
 
 	xetcd.New(xetcd.Config{
 		Endpoints: config.AppConf.Etcd.Host,
@@ -75,7 +77,6 @@ func (p *socketProgram) Start() error {
 	// 启动消息队列服务
 	go func() {
 		defer helper.RecoverPanic()
-
 		server := xnsq.NewNsqServer(registry.Options{
 			NsqAddress:      config.AppConf.Mq.Nsq.Host,
 			NSQConsumers:    config.AppConf.Mq.Nsq.Consumer,
@@ -83,7 +84,6 @@ func (p *socketProgram) Start() error {
 			Env:             config.AppConf.App.Env,
 			LocalAddress:    localtion.GetLocalIP(),
 		})
-
 		server.Run(consumer.SocketConsumerHandler(server.Opt))
 	}()
 
@@ -96,8 +96,8 @@ func (p *socketProgram) Start() error {
 
 func (p *socketProgram) Stop() error {
 	p.once.Do(func() {
-		defer db.DisconnectMysql()
-		defer db.DisconnectRedis()
+		defer mysql.Disconnect()
+		defer redis.DisconnectRedis()
 		defer xetcd.Close()
 		defer producer.SocketProducer.Stop()
 		defer socketio_server.StopDevice()

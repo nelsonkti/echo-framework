@@ -2,7 +2,10 @@ package helper
 
 import "reflect"
 
-//结构体转map方法1
+// Struct2Map
+// @Description: 结构体转map方法1
+// @param obj
+// @return map[string]interface{}
 func Struct2Map(obj interface{}) map[string]interface{} {
 	t := reflect.TypeOf(obj)
 	v := reflect.ValueOf(obj)

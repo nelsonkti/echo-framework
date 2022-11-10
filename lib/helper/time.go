@@ -48,7 +48,11 @@ func GetDateWithWeekdayBetween(format, from, to string) (map[string]int, error) 
 	return res, nil
 }
 
-// 验证时间格式是否符合规则
+// CheckTime
+// @Description: 验证时间格式是否符合规则
+// @param inputTime
+// @param format
+// @return bool
 func CheckTime(inputTime string, format string) bool {
 	unixtime, err := time.Parse(format, inputTime)
 	if err != nil {
@@ -61,11 +65,11 @@ func CheckTime(inputTime string, format string) bool {
 	return true
 }
 
-/**
-获取星期
-*/
+// GetZHWeekday
+// @Description: 获取星期
+// @param date
+// @return string
 func GetZHWeekday(date string) string {
-
 	var res string
 	var weekday string
 
@@ -99,7 +103,12 @@ func GetZHWeekday(date string) string {
 	return res
 }
 
-//获取相差时间
+// GetHourDiffer
+// @Description: 获取相差时间
+// @param startTime
+// @param endTime
+// @param layout
+// @return float32
 func GetHourDiffer(startTime, endTime, layout string) float32 {
 
 	var hour float32
@@ -115,23 +124,36 @@ func GetHourDiffer(startTime, endTime, layout string) float32 {
 	}
 }
 
-//获取传入的时间所在月份的第一天，即某月第一天的0点。如传入time.Now(), 返回当前月份的第一天0点时间。
+// StartOfMonth
+// @Description: 获取传入的时间所在月份的第一天，即某月第一天的0点。如传入time.Now(), 返回当前月份的第一天0点时间。
+// @param d
+// @return time.Time
 func StartOfMonth(d time.Time) time.Time {
 	d = d.AddDate(0, 0, -d.Day()+1)
 	return GetZeroTime(d)
 }
 
-//获取传入的时间所在月份的最后一天，即某月最后一天的0点。如传入time.Now(), 返回当前月份的最后一天0点时间。
+// EndOfMonth
+// @Description: 获取传入的时间所在月份的最后一天，即某月最后一天的0点。如传入time.Now(), 返回当前月份的最后一天0点时间。
+// @param d
+// @return time.Time
 func EndOfMonth(d time.Time) time.Time {
 	return StartOfMonth(d).AddDate(0, 1, 0).Add(-1)
 }
 
-//获取某一天的0点时间
+// GetZeroTime
+// @Description: 获取某一天的0点时间
+// @param d
+// @return time.Time
 func GetZeroTime(d time.Time) time.Time {
 	return time.Date(d.Year(), d.Month(), d.Day(), 0, 0, 0, 0, d.Location())
 }
 
-// 时间转换
+// TimeParse
+// @Description: 时间转换
+// @param layout
+// @param value
+// @return time.Time
 func TimeParse(layout, value string) time.Time {
 	timeP, _ := time.ParseInLocation(layout, value, TimeZone)
 	return timeP

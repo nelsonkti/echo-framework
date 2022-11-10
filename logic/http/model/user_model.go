@@ -4,7 +4,7 @@
 package model
 
 import (
-	"github.com/nelsonkti/echo-framework/lib/db"
+	"github.com/nelsonkti/echo-framework/lib/db/mysql/db"
 	"gorm.io/gorm"
 )
 
@@ -17,7 +17,7 @@ type UserModel struct {
 }
 
 func (m UserModel) Model() *gorm.DB {
-	return db.Mysql((&m).Connection()).Model(&m)
+	return db.Connect((&m).Connection()).Model(&m)
 }
 
 func (*UserModel) Connection() string {

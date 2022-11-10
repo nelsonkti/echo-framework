@@ -1,26 +1,16 @@
 package controller
 
 import (
+	"github.com/labstack/echo/v4"
 	"github.com/nelsonkti/echo-framework/logic/http/model"
 	"github.com/nelsonkti/echo-framework/logic/http/service"
 	"github.com/nelsonkti/echo-framework/logic/http/validator"
 	"github.com/nelsonkti/echo-framework/util/xrsp"
-	"github.com/labstack/echo/v4"
 	"net/http"
 )
 
 // Handler
 func GetHello(context echo.Context) error {
-
-	type getUserRequest struct {
-		PageRequest
-	}
-
-	var data getUserRequest
-	_ = context.Bind(&data)
-
-	pageResponse := NewPageResponse(data.PageRequest)
-
 	var res []model.EmployeesBase
 	EmployeesBase := model.EmployeesBase{}
 	query := EmployeesBase.Model()
@@ -31,9 +21,7 @@ func GetHello(context echo.Context) error {
 		Order("id asc").
 		Find(&res)
 
-	pageResponse.Data = res
-
-	return context.JSON(http.StatusOK, xrsp.Data(pageResponse))
+	return context.JSON(http.StatusOK, xrsp.Data(res))
 }
 
 func GetHello2(ctx echo.Context) error {

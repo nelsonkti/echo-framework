@@ -2,7 +2,11 @@ package helper
 
 import "math"
 
-// 保留小数位
+// Round
+// @Description: 保留小数位
+// @param f
+// @param n
+// @return float64
 func Round(f float64, n int) float64 {
 	var negative bool
 	if f < 0 {

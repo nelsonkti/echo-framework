@@ -1,15 +1,15 @@
-package db
+package redis
 
 import (
-	"github.com/nelsonkti/echo-framework/lib/logger"
 	"github.com/go-redis/redis"
+	"github.com/nelsonkti/echo-framework/lib/logger"
 	"sync"
 )
 
 //redis 服务
 var redisDatabases sync.Map
 
-func ConnectRedis(address string, password string, db int, name string) *redis.Client {
+func Connect(address string, password string, db int, name string) *redis.Client {
 	redisClient := redis.NewClient(
 		&redis.Options{
 			Addr:     address,

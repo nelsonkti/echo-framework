@@ -46,7 +46,12 @@ func (m *Binder) lazyInit() {
 	})
 }
 
-// 数据绑定以及校验
+// Bind
+// @Description: 数据绑定以及校验
+// @receiver m
+// @param v
+// @param c
+// @return error
 func (m *Binder) Bind(v interface{}, c echo.Context) error {
 	if err := m.DefaultBinder.Bind(v, c); err != nil {
 		return err
