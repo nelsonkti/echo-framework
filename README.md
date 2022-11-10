@@ -58,7 +58,7 @@ memcache.Connect(config.Memcache)
 `redis` 
 ```
 //连接redis
-redis.Connect(config.RedisIP, config.RedisPassword, 0, "default")
+redis.NewClient(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password)
 ```
 
 `nsq` 

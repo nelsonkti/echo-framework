@@ -64,7 +64,7 @@ func (p *socketProgram) Start() error {
 	memcache.Connect(config.AppConf.Data.Memcache.Host)
 
 	//连接redis
-	redis.Connect(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password, 0, "default")
+	redis.NewClient(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password)
 
 	xetcd.New(xetcd.Config{
 		Endpoints: config.AppConf.Etcd.Host,
@@ -97,7 +97,7 @@ func (p *socketProgram) Start() error {
 func (p *socketProgram) Stop() error {
 	p.once.Do(func() {
 		defer mysql.Disconnect()
-		defer redis.DisconnectRedis()
+		defer redis.Disconnect()
 		defer xetcd.Close()
 		defer producer.SocketProducer.Stop()
 		defer socketio_server.StopDevice()

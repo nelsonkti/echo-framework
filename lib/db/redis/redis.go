@@ -9,24 +9,44 @@ import (
 //redis 服务
 var redisDatabases sync.Map
 
-func Connect(address string, password string, db int, name string) *redis.Client {
+type Option func(*options)
+
+type DBFunc func() int
+type NameFunc func() string
+
+type options struct {
+	db   DBFunc
+	name NameFunc
+}
+
+func NewClient(address, password string, opts ...Option) *redis.Client {
+	o := options{
+		db:   defaultDB,
+		name: defaultName,
+	}
+	for _, opt := range opts {
+		opt(&o)
+	}
+
 	redisClient := redis.NewClient(
 		&redis.Options{
 			Addr:     address,
 			Password: password,
-			DB:       db,
+			DB:       o.db(),
 		},
 	)
+
 	_, err := redisClient.Ping().Result()
 	if err != nil {
 		panic(err)
 	}
 
-	redisDatabases.Store(name, redisClient)
+	redisDatabases.Store(o.name(), redisClient)
+
 	return redisClient
 }
 
-func Redis(name string) *redis.Client {
+func connect(name string) *redis.Client {
 	value, ok := redisDatabases.Load(name)
 	if ok {
 		return value.(*redis.Client)
@@ -36,13 +56,37 @@ func Redis(name string) *redis.Client {
 }
 
 func RedisDefault() *redis.Client {
-	return Redis("default")
+	return connect("default")
 }
 
-func DisconnectRedis() {
+func Disconnect() {
 	redisDatabases.Range(func(key, value interface{}) bool {
 		defer value.(*redis.Client).Close()
 		return true
 	})
 	logger.Sugar.Info("disconnect redis")
+}
+
+func defaultDB() int {
+	return 0
+}
+
+func WithDB(db int) Option {
+	return func(o *options) {
+		o.db = func() int {
+			return db
+		}
+	}
+}
+
+func defaultName() string {
+	return "default"
+}
+
+func WithName(name string) Option {
+	return func(o *options) {
+		o.name = func() string {
+			return name
+		}
+	}
 }

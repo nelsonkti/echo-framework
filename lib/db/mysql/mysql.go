@@ -18,6 +18,8 @@ var Databases sync.Map
 
 const defaultConfig = "?parseTime=true&charset=utf8mb4&loc=Asia%2FShanghai"
 
+type nilFunc func()
+
 func Connect() {
 	for _, conf := range config.AppConf.Data.Connection.Database {
 		newDatabase().connect(conf)
@@ -54,8 +56,6 @@ func newDatabase() *database {
 
 	return db
 }
-
-type nilFunc func()
 
 type database struct {
 	db       *gorm.DB

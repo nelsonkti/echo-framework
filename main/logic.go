@@ -62,7 +62,7 @@ func (p *logicProgram) Start() error {
 	memcache.Connect(config.AppConf.Data.Memcache.Host)
 
 	//连接redis
-	redis.Connect(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password, 0, "default")
+	redis.NewClient(config.AppConf.Data.Redis.Addr, config.AppConf.Data.Redis.Password)
 
 	xetcd.New(xetcd.Config{
 		Endpoints: config.AppConf.Etcd.Host,
@@ -115,7 +115,7 @@ func newApp() {
 func (p *logicProgram) Stop() error {
 	p.once.Do(func() {
 		defer mysql.Disconnect()
-		defer redis.DisconnectRedis()
+		defer redis.Disconnect()
 		defer xetcd.Close()
 		defer routes.CancelRoute(Echo)
 		defer producer.LogicProducer.Stop()
